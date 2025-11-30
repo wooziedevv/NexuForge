@@ -4,102 +4,46 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NexuForge</title>
-<link rel="stylesheet" href="style.css">
-
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<!-- ================================
-     GLASS NAVBAR + HAMBURGER MENU
-================================ -->
 <header class="glass-header">
-  <div class="logo">
-    <span class="logo-text">NEXUFORGE</span>
+  <div class="logo" onclick="window.location.href='index.html'">
+      NEXUFORGE
   </div>
 
   <div class="menu-icons">
-      <!-- Bildirim zili -->
-      <div class="notif-bell" id="notifBell">
-          🔔 <span id="notifCount" class="notif-count">0</span>
+      <div class="notif-bell" onclick="window.location.href='notifications.html'">
+          🔔 <span id="notifCount">0</span>
       </div>
-
-      <!-- Hamburger -->
       <div id="hamburger" class="hamburger">☰</div>
   </div>
 </header>
 
-<!-- ================================
-     SAĞDAN AÇILAN HAMBURGER MENÜ
-================================ -->
-<div id="sideMenu" class="side-menu">
-    <div class="menu-header">
-        <span class="close-menu" id="closeMenu">✕</span>
-        <h3>Menü</h3>
-    </div>
+<div id="sidebar" class="sidebar">
+   <div class="sidebar-header">
+       <span id="closeSidebar">✕</span>
+       <h3>Menü</h3>
+   </div>
 
-    <a href="index.html" class="menu-item">🏠 Ana Sayfa</a>
-    <a href="products.html" class="menu-item">🛒 Ürünler</a>
-    <a href="scrims.html" class="menu-item">🎮 Scrim / Eventler</a>
-    <a href="notifications.html" class="menu-item">🔔 Bildirimler</a>
-    <a href="profile.html" class="menu-item">👤 Profilim</a>
-    <a href="about.html" class="menu-item">ℹ️ Hakkımızda</a>
-    <a href="contact.html" class="menu-item">📞 İletişim</a>
+   <a href="index.html">🏠 Ana Sayfa</a>
+   <a href="products.html">🛒 Ürünler</a>
+   <a href="events.html">🎮 Scrim / Event</a>
+   <a href="dm.html">💬 Mesajlar</a>
+   <a href="profile.html">👤 Profilim</a>
+   <a href="auth.html">🔐 Giriş / Üyelik</a>
+   <a href="about.html">ℹ️ Hakkımızda</a>
+   <a href="contact.html">📞 İletişim</a>
 
-    <!-- ADMIN PANEL (SADECE SENDE GÖRÜNÜR) -->
-    <a href="admin.html" id="adminPanelBtn" class="menu-item admin-only" style="display:none;">
-        ⚡ Admin Panel
-    </a>
-
-    <!-- Çıkış -->
-    <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
+   <a id="adminPanelBtn" href="admin.html" style="display:none; color:#ff4444">⚡ Admin Panel</a>
 </div>
 
-<!-- Arkaplanda karartma -->
-<div id="overlay" class="overlay"></div>
-
-<!-- ================================
-        HERO BÖLÜMÜ
-================================ -->
-<section class="hero">
+<div class="hero">
     <h1>NexuForge</h1>
-    <p class="hero-sub">Topluluk • Gaming • Yazılım • Event</p>
-</section>
+    <p>Gaming • E-Spor • Topluluk • Yazılım</p>
+</div>
 
-<!-- ================================
-        ANA İÇERİK
-================================ -->
-<main class="main-content">
-
-    <section class="welcome-box glass-box">
-        <h2>Hoş Geldin!</h2>
-        <p>NexuForge platformuna hoş geldin. Giriş yaparak sohbet edebilir, DM atabilir, profil oluşturabilir, ürünlere bakabilir ve etkinliklere katılabilirsin.</p>
-
-        <button onclick="window.location.href='auth.html'" class="glass-btn">Giriş / Üyelik</button>
-    </section>
-
-    <!-- GLOBAL CHAT KUTUSU GELECEK (app.js aktif edince) -->
-    <section id="chatArea" class="glass-box" style="display:none;">
-        <h3>Genel Sohbet</h3>
-        <div id="globalChat" class="chat-box"></div>
-
-        <div class="chat-input-row">
-            <input type="text" id="globalMsg" placeholder="Mesaj yaz..." class="chat-input">
-            <button onclick="sendGlobalMsg()" class="glass-btn">Gönder</button>
-        </div>
-    </section>
-
-</main>
-
-<!-- ================================
-        FOOTER
-================================ -->
-<footer class="footer">
-    © 2025 NexuForge – Tüm Hakları Saklıdır.
-</footer>
-
-<script src="app.js"></script>
+<script src="js/ui.js"></script>
 </body>
 </html>
