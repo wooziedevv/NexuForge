@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <title>NexuForge - Profil</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" href="https://r.resimlink.com/FrNusUEa.jpeg" type="image/png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center">
+    <div class="logo" onclick="location.href='index.html'">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NF Logo" style="height:40px;cursor:pointer;">
+        <path d="M20 180 L20 30 L60 30 L120 130 L120 30 L160 30 L160 180 L120 180 L120 80 L60 180 Z" fill="#ffffff"/>
+        <path d="M120 30 L190 30 L190 60 L160 60 L160 90 L190 90 L190 120 L160 120 L160 180 L120 180 Z" fill="#ffffff"/>
+      </svg>
+    </div>
+    <nav style="margin-left:12px">
+      <a href="index.html">Ana Sayfa</a>
+      <a href="products.html">Ürünler</a>
+      <a href="scrims.html">Scrim / Eventler</a>
+      <a href="notifications.html">Bildirimler</a>
+      <a href="auth.html">Giriş / Üyelik</a>
+      <a href="profile.html" class="active">Profil</a>
+      <a href="about.html">Hakkımızda</a>
+      <a href="contact.html">İletişim</a>
+      <a href="admin.html" id="navAdminLink">Admin</a>
+    </nav>
+  </div>
+  <div id="headerUser" style="font-size:.9rem;color:#ccc"></div>
+</header>
+
+<main id="profileSection">
+  <h2>Profilim</h2>
+  <div class="profile-card">
+    <div style="display:flex;gap:16px;align-items:center;margin-bottom:12px">
+      <img id="profileAvatarPreview" src="https://via.placeholder.com/96?text=NF" alt="profil">
+      <div>
+        <div><strong id="profileUsernameLabel"></strong></div>
+        <div style="font-size:.85rem;color:#9ca3af" id="profileEmailLabel"></div>
+      </div>
+    </div>
+
+    <label>Avatar (Görsel URL)</label>
+    <input id="profileAvatar" class="input" placeholder="https://...">
+
+    <label style="margin-top:8px;display:block">Hakkımda</label>
+    <textarea id="profileAbout" class="input" rows="3" placeholder="Kendini tanıt"></textarea>
+
+    <label style="margin-top:8px;display:block">Instagram kullanıcı adı</label>
+    <input id="profileInstagram" class="input" placeholder="instagram.com/">
+
+    <label style="margin-top:8px;display:block">TikTok kullanıcı adı</label>
+    <input id="profileTiktok" class="input" placeholder="tiktok.com/@">
+
+    <label style="margin-top:8px;display:block">Twitter/X kullanıcı adı</label>
+    <input id="profileTwitter" class="input" placeholder="x.com/">
+
+    <label style="margin-top:8px;display:block">Telefon</label>
+    <input id="profilePhone" class="input" placeholder="+90 ...">
+
+    <label style="margin-top:8px;display:block">İletişim e-postası</label>
+    <input id="profileContactEmail" class="input" placeholder="ornek@mail.com">
+
+    <button style="margin-top:12px" onclick="saveProfile()">Kaydet</button>
+  </div>
+
+  <h3 style="margin-top:24px;text-align:left">Arkadaşlarım</h3>
+  <div id="friendsList" class="friends-list"></div>
+</main>
+
+<footer>&copy; 2025 NexuForge Tüm Hakları Gizlidir.</footer>
+<script src="app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const cur = JSON.parse(sessionStorage.getItem('currentUser') || 'null');
+    if(cur){
+      document.getElementById('profileUsernameLabel').textContent = cur.username;
+      document.getElementById('profileEmailLabel').textContent = cur.email;
+    }
+  });
+</script>
+</body>
+</html>
