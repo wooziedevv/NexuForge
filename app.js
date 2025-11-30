@@ -13,6 +13,7 @@ function _set(key,val){ localStorage.setItem(key, JSON.stringify(val)); }
       username: 'wooziedev',
       email: 'admin@local',
       password: 'Ati1234', // demo only
+      age: 20,
       about: 'Site sahibi admin.',
       profileImg: '',
       instagram:'wooziedev',
@@ -48,14 +49,18 @@ function escapeHtml(unsafe){
 /* ----------------- Auth: register / login / logout ----------------- */
 function register(){
   const regUsername = document.getElementById('regUsername');
-  if(!regUsername) return; // bu sayfada değil
+  if(!regUsername) return;
   const username = regUsername.value.trim();
   const emailEl = document.getElementById('regEmail');
   const pwdEl = document.getElementById('regPassword');
+  const ageEl = document.getElementById('regAge');
   const email = emailEl.value.trim();
   const password = pwdEl.value;
+  const ageVal = ageEl ? parseInt(ageEl.value,10) : NaN;
 
-  if(!username || !email || !password) return alert('Tüm alanları doldurun.');
+  if(!username || !email || !password || !ageVal) return alert('Tüm alanları doldurun.');
+  if(isNaN(ageVal) || ageVal < 13) return alert('Sohbet sistemi için en az 13 yaşında olmalısın.');
+
   const low = username.toLowerCase();
   if(bannedWords.some(w=>low.includes(w))) return alert('Kullanıcı adı uygun değil (argo).');
 
@@ -64,7 +69,18 @@ function register(){
   if(users.find(u=>u.email.toLowerCase()===email.toLowerCase())) return alert('Bu e-mail zaten kullanılmış.');
 
   const uid = 'u'+Date.now();
-  users.push({ uid, username, email, password, about:'', profileImg:'', instagram:'', tiktok:'', friends:[] });
+  users.push({
+    uid,
+    username,
+    email,
+    password,
+    age: ageVal,
+    about:'',
+    profileImg:'',
+    instagram:'',
+    tiktok:'',
+    friends:[]
+  });
   _set('users', users);
 
   alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
@@ -101,17 +117,15 @@ function refreshUI(){
   const cur = JSON.parse(sessionStorage.getItem('currentUser') || 'null');
   currentUser = cur;
 
-  // header’daki kullanıcı bilgisi
   const headerUser = document.getElementById('headerUser');
   if(headerUser){
     if(currentUser){
-      headerUser.textContent = `Giriş yapan: ${currentUser.username}`;
+      headerUser.textContent = `Giriş yapan: ${currentUser.username} ${currentUser.age ? '('+currentUser.age+')' : ''}`;
     }else{
       headerUser.textContent = 'Giriş yapmadınız';
     }
   }
 
-  // auth sayfasındaki kutular
   const userBox = document.getElementById('userBox');
   const regBox = document.getElementById('registerBox');
   const loginBox = document.getElementById('loginBox');
@@ -129,7 +143,6 @@ function refreshUI(){
     if(loginBox) loginBox.style.display = 'block';
   }
 
-  // ana sayfadaki chat alanı
   const interactive = document.getElementById('interactiveArea');
   if(interactive){
     if(currentUser) interactive.style.display = 'block';
@@ -137,7 +150,7 @@ function refreshUI(){
   }
 }
 
-/* ----------------- Global chat: store in localStorage ----------------- */
+/* ----------------- Global chat ----------------- */
 function listenGlobalChat(){
   if(!document.getElementById('globalChat')) return;
   renderGlobalChat();
@@ -162,8 +175,19 @@ function renderGlobalChat(){
   });
   container.scrollTop = container.scrollHeight;
 }
+function ensureChatAllowed(){
+  if(!currentUser){
+    alert('Önce giriş yapın.');
+    return false;
+  }
+  if(!currentUser.age || currentUser.age < 13){
+    alert('Sohbet için geçerli bir yaş ile kayıtlı olmalısın (13+).');
+    return false;
+  }
+  return true;
+}
 function sendGlobalMsg(){
-  if(!currentUser) return alert('Önce giriş yapın.');
+  if(!ensureChatAllowed()) return;
   const inp = document.getElementById('globalMsg');
   if(!inp) return;
   const text = inp.value.trim();
@@ -182,7 +206,7 @@ function sendGlobalMsg(){
 }
 window.sendGlobalMsg = sendGlobalMsg;
 
-/* ----------------- DM ve kullanıcı arama (sadece ana sayfada) ----------------- */
+/* ----------------- DM + Arkadaş sistemi ----------------- */
 let searchTimeout = null;
 function searchUsersDebounced(){
   if(searchTimeout) clearTimeout(searchTimeout);
@@ -203,14 +227,34 @@ function searchUsers(){
   );
   users.forEach(u=>{
     const li = document.createElement('li');
-    li.textContent = `${u.username} — ${u.email}`;
-    li.onclick = ()=>{ openDMWith(u.uid, u.username); };
+    const left = document.createElement('div');
+    const right = document.createElement('div');
+
+    left.innerHTML =
+      `<strong>${escapeHtml(u.username)}</strong><br>`+
+      `<small>${escapeHtml(u.email)} ${u.age? '('+u.age+')':''}</small>`;
+
+    const dmBtn = document.createElement('button');
+    dmBtn.textContent = 'DM';
+    dmBtn.onclick = ()=>{ openDMWith(u.uid, u.username); };
+
+    const frBtn = document.createElement('button');
+    frBtn.textContent = 'Arkadaş Ekle';
+    frBtn.onclick = ()=>{ addFriend(u.uid); };
+
+    right.appendChild(dmBtn);
+    right.appendChild(frBtn);
+
+    li.appendChild(left);
+    li.appendChild(right);
     list.appendChild(li);
   });
 }
+
 function dmDocId(a,b){ return (a<b)? a+'_'+b : b+'_'+a; }
+
 function openDMWith(uid, displayName){
-  if(!currentUser) return alert('Önce giriş yapın.');
+  if(!ensureChatAllowed()) return;
   if(uid === currentUser.uid) return alert('Kendinle DM olmaz.');
   currentDMWith = uid;
   const dmWith = document.getElementById('dmWith');
@@ -238,7 +282,7 @@ function renderDM(){
   box.scrollTop = box.scrollHeight;
 }
 function sendDM(){
-  if(!currentUser) return alert('Önce giriş yapın.');
+  if(!ensureChatAllowed()) return;
   if(!currentDMWith) return alert('Bir kullanıcı seçin.');
   const inp = document.getElementById('dmMsg');
   if(!inp) return;
@@ -258,13 +302,34 @@ function sendDM(){
   localStorage.setItem('dms_last_update', Date.now());
 }
 window.sendDM = sendDM;
+
 window.addEventListener('storage',(e)=>{
   if(e.key === 'dms' || e.key === 'dms_last_update'){
     if(currentDMWith) renderDM();
   }
 });
 
-/* ----------------- Feedback (isteğe göre sayfaya ekleyebilirsin) ----------------- */
+/* Arkadaş ekleme */
+function addFriend(targetUid){
+  if(!currentUser) return alert('Önce giriş yapın.');
+  if(targetUid === currentUser.uid) return alert('Kendini arkadaş ekleyemezsin.');
+  const users = _get('users');
+  const me = users.find(u=>u.uid===currentUser.uid);
+  const other = users.find(u=>u.uid===targetUid);
+  if(!me || !other) return alert('Kullanıcı bulunamadı.');
+  me.friends = me.friends || [];
+  other.friends = other.friends || [];
+  if(me.friends.includes(targetUid)) return alert('Zaten arkadaşsınız.');
+  me.friends.push(targetUid);
+  other.friends.push(me.uid); // çift taraflı
+  _set('users', users);
+  currentUser = me;
+  sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+  alert(`${other.username} artık arkadaşın!`);
+}
+window.addFriend = addFriend;
+
+/* ----------------- Feedback ----------------- */
 function sendFeedback(){
   const area = document.getElementById('feedbackText');
   if(!area) return;
@@ -291,13 +356,21 @@ function renderProducts(targetId){
   const out = document.getElementById(targetId || 'productList');
   if(!out) return;
   const p = _get('products');
-  out.innerHTML = p.length
-    ? p.map(item =>
-        `<div><strong>${escapeHtml(item.name)}</strong>`+
-        `<div>Fiyat: ${item.price} TL • Stok: ${item.stock}</div></div>`
-      ).join('')
-    : '<div style="color:#aaa">Ürün yok.</div>';
+  if(!p.length){
+    out.innerHTML = '<div style="color:#aaa">Ürün yok.</div>';
+    return;
+  }
+  out.classList.add('product-grid');
+  out.innerHTML = p.map(item =>
+    `<div class="product-card">`+
+      `<img src="${escapeHtml(item.image || 'https://via.placeholder.com/300x200?text=Ürün')}" alt="${escapeHtml(item.name)}">`+
+      `<h3>${escapeHtml(item.name)}</h3>`+
+      `<div class="price">${item.price} TL</div>`+
+      `<div class="stock">Stok: ${item.stock}</div>`+
+    `</div>`
+  ).join('');
 }
+
 function renderEvents(targetId){
   const out = document.getElementById(targetId || 'scrimList');
   if(!out) return;
@@ -336,13 +409,18 @@ function adminAddProduct(){
   const name = nameEl.value.trim();
   const stock = Number(document.getElementById('productStock').value) || 0;
   const price = Number(document.getElementById('productPrice').value) || 0;
+  const imgEl = document.getElementById('productImage');
+  const image = imgEl ? imgEl.value.trim() : '';
   if(!name) return alert('Ürün adı girin');
   const p = _get('products');
-  p.push({ id:'p'+Date.now(), name, stock, price });
+  p.push({ id:'p'+Date.now(), name, stock, price, image });
   _set('products', p);
   renderProducts('adminProductList');
   alert('Ürün eklendi (demo).');
-  nameEl.value=''; document.getElementById('productStock').value=''; document.getElementById('productPrice').value='';
+  nameEl.value='';
+  document.getElementById('productStock').value='';
+  document.getElementById('productPrice').value='';
+  if(imgEl) imgEl.value='';
 }
 window.adminAddProduct = adminAddProduct;
 
@@ -383,7 +461,8 @@ function renderAdminUsers(){
   const users = _get('users');
   el.innerHTML = users.map(u =>
     `<div style="padding:6px;border-bottom:1px solid #222">`+
-    `<strong>${escapeHtml(u.username)}</strong>`+
+    `<strong>${escapeHtml(u.username)}</strong> `+
+    `${u.age? '<small style="color:#aaa">('+u.age+')</small>':''}`+
     `<div style="color:#aaa">${escapeHtml(u.email)}</div>`+
     `</div>`
   ).join('');
@@ -422,7 +501,6 @@ function adminLogin(){
     localStorage.setItem('isAdmin', '1');
     closeAdminModal();
     alert('Admin girişi başarılı.');
-    // admin sayfasında listeyi yenile
     renderAdminUsers();
     renderAdminFeedback();
     renderProducts('adminProductList');
@@ -434,7 +512,7 @@ function adminLogin(){
 }
 window.adminLogin = adminLogin;
 
-/* ----------------- Settings helpers (dilersen sonraya bırak) ----------------- */
+/* ----------------- Settings helpers ----------------- */
 function resendVerification(){ alert('Demo: Doğrulama maili, backend bağlanınca çalışacak.'); }
 window.resendVerification = resendVerification;
 function sendPasswordReset(){
@@ -445,23 +523,19 @@ function sendPasswordReset(){
 }
 window.sendPasswordReset = sendPasswordReset;
 
-/* ----------------- On load (sayfa algıla) ----------------- */
+/* ----------------- On load ----------------- */
 document.addEventListener('DOMContentLoaded', ()=>{
   refreshUI();
 
-  // ana sayfa
   if(document.getElementById('globalChat')){
     listenGlobalChat();
   }
-  // ürün sayfası
   if(document.getElementById('productListPage')){
     renderProducts('productListPage');
   }
-  // bildirim sayfası
   if(document.getElementById('notifListPage')){
     renderNotifications('notifListPage');
   }
-  // admin sayfası
   if(document.getElementById('adminUsersList')){
     if(localStorage.getItem('isAdmin') === '1'){
       renderAdminUsers();
@@ -470,5 +544,25 @@ document.addEventListener('DOMContentLoaded', ()=>{
       renderEvents('adminEventList');
       renderNotifications('adminNotifList');
     }
+  }
+
+  // Enter ile mesaj gönderme
+  const globalInput = document.getElementById('globalMsg');
+  if(globalInput){
+    globalInput.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' && !e.shiftKey){
+        e.preventDefault();
+        sendGlobalMsg();
+      }
+    });
+  }
+  const dmInput = document.getElementById('dmMsg');
+  if(dmInput){
+    dmInput.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' && !e.shiftKey){
+        e.preventDefault();
+        sendDM();
+      }
+    });
   }
 });
