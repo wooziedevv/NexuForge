@@ -98,3 +98,34 @@ body {
     font-size: 18px;
     opacity: 0.8;
 }
+.auth-box {
+    margin-top: 120px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    background: #111;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.auth-section {
+    margin-top: 20px;
+}
+
+.auth-section input {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 6px;
+    border: none;
+}
+
+.auth-section button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    background: #0f0;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
