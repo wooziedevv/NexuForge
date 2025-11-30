@@ -129,7 +129,7 @@ function login() {
   // --- ADMIN KONTROLÜ ---
   const adminBtn = document.getElementById("adminPanelBtn");
 
-  if (user.username === "Wooziedev111" && user.password === "ati006940.") {
+  if (user.username === "Wooziedev111" && user.password === "ati1234.ati.") {
     adminBtn.style.display = "inline-block";   // admin görünsün
     user.role = "admin";
   } else {
