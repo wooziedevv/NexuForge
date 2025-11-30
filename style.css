@@ -25,8 +25,8 @@ nav a{
   position:relative;
   color:#e5e7eb;
   text-decoration:none;
-  margin-left:1rem;
-  font-size:.95rem;
+  margin-left:.8rem;
+  font-size:.9rem;
   padding-bottom:2px;
 }
 nav a::after{
@@ -155,12 +155,20 @@ footer{text-align:center;padding:2rem;border-top:1px solid #333;font-size:.9rem}
   border-radius:8px;
   background:rgba(15,23,42,0.6);
 }
+.msg.mine{
+  background:rgba(34,197,94,0.15);
+  text-align:right;
+}
 .msg strong{color:#f9fafb;}
 .input{width:100%;max-width:260px}
 
 /* search results */
-#searchResults li{
+#searchResults{
   list-style:none;
+  margin:8px 0;
+  padding:0;
+}
+#searchResults li{
   padding:8px;
   border-bottom:1px solid #222;
   display:flex;
@@ -223,7 +231,7 @@ footer{text-align:center;padding:2rem;border-top:1px solid #333;font-size:.9rem}
   font-size:.9rem;
 }
 
-/* profile public card */
+/* profile card */
 .profile-card{
   background:rgba(15,23,42,0.85);
   padding:12px;
@@ -240,6 +248,15 @@ footer{text-align:center;padding:2rem;border-top:1px solid #333;font-size:.9rem}
   border:2px solid #fff;
   display:block;
   margin-bottom:8px;
+}
+
+/* friends list */
+.friends-list > div{
+  padding:6px;
+  border-bottom:1px solid #1f2937;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
 /* admin modal */
@@ -273,6 +290,30 @@ textarea:focus{
   outline:none;
   border-color:#38bdf8 !important;
   box-shadow:0 0 0 1px rgba(56,189,248,.7);
+}
+
+/* social icons */
+.social-icons{
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  margin-top:12px;
+}
+.social-icons a{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#111827;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(148,163,184,0.4);
+  color:#e5e7eb;
+}
+.social-icons svg{
+  width:20px;
+  height:20px;
+  fill:#e5e7eb;
 }
 
 /* small screens */
