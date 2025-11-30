@@ -19,3 +19,19 @@ if (currentUser && currentUser.username === "Wooziedev111") {
 } else {
     adminBtn.style.display = "none";
 }
+const overlay = document.getElementById("overlay");
+
+hamburger.onclick = () => {
+    sidebar.classList.add("open");
+    overlay.classList.add("active");
+};
+
+closeSidebar.onclick = () => {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("active");
+};
+
+overlay.onclick = () => {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("active");
+};
