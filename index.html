@@ -6,10 +6,10 @@
 
 <title>NexuForge</title>
 
-<!-- CSS DOĞRU YERİ -->
+<!-- Doğru CSS yolu -->
 <link rel="stylesheet" href="css/style.css">
 
-</head<link rel="stylesheet" href="css/style.css">>
+</head>
 <body>
 
 <header class="header">
@@ -34,7 +34,10 @@
     <a href="about.html">ℹ️ Hakkımızda</a>
     <a href="contact.html">📞 İletişim</a>
 
-    <a id="adminPanelBtn" href="admin.html" class="admin-link">⚡ Admin Panel</a>
+    <!-- Admin Panel sadece belirli kullanıcıda görünecek -->
+    <a id="adminPanelBtn" href="admin.html" class="admin-link" style="display:none;">
+        ⚡ Admin Panel
+    </a>
 </div>
 
 <section class="hero">
@@ -42,6 +45,7 @@
     <p>Gaming • E-Spor • Topluluk • Yazılım</p>
 </section>
 
+<!-- JS -->
 <script src="js/ui.js"></script>
 
 </body>
