@@ -10,10 +10,15 @@
 <body>
 <header>
   <div style="display:flex;align-items:center">
-    <div class="logo" onclick="location.href='index.html'">...</div>
+    <div class="logo" onclick="location.href='index.html'">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NF Logo" style="height:40px;cursor:pointer;">
+        <path d="M20 180 L20 30 L60 30 L120 130 L120 30 L160 30 L160 180 L120 180 L120 80 L60 180 Z" fill="#ffffff"/>
+        <path d="M120 30 L190 30 L190 60 L160 60 L160 90 L190 90 L190 120 L160 120 L160 180 L120 180 Z" fill="#ffffff"/>
+      </svg>
+    </div>
     <nav style="margin-left:12px">
       <a href="index.html">Ana Sayfa</a>
-      <a href="products.html">Ürünler</a>
+      <a href="products.html" class="active">Ürünler</a>
       <a href="notifications.html">Bildirimler</a>
       <a href="auth.html">Giriş / Üyelik</a>
       <a href="about.html">Hakkımızda</a>
@@ -26,8 +31,8 @@
 
 <main>
   <h2>Ürünler</h2>
-  <p>Ürünler admin panelden yönetilir.</p>
-  <div id="productListPage" class="item-list"></div>
+  <p>Ürünler admin panelden yönetilir. Her ürün için bir görsel URL’i ekleyebilirsin.</p>
+  <div id="productListPage"></div>
 </main>
 
 <footer>&copy; 2025 NexuForge Tüm Hakları Gizlidir.</footer>
