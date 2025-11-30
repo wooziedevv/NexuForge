@@ -19,6 +19,7 @@ body {
     top: 0;
     left: 0;
     z-index: 1000;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .logo {
@@ -36,11 +37,36 @@ body {
 .hamburger {
     font-size: 32px;
     cursor: pointer;
+    transition: 0.2s;
+}
+
+.hamburger:hover {
+    transform: scale(1.1);
 }
 
 .notif {
     font-size: 22px;
     cursor: pointer;
+}
+
+/* DARK OVERLAY (sidebar açılınca sayfa kararsın) */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s ease;
+    z-index: 1500;
+}
+
+#overlay.active {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 /* SIDEBAR */
@@ -54,6 +80,7 @@ body {
     padding: 20px;
     transition: 0.3s ease;
     z-index: 2000;
+    border-left: 1px solid rgba(255,255,255,0.1);
 }
 
 .sidebar.open {
@@ -78,6 +105,12 @@ body {
     text-decoration: none;
     color: white;
     font-size: 17px;
+    transition: 0.2s;
+}
+
+.sidebar a:hover {
+    background: #222;
+    transform: translateX(5px);
 }
 
 .admin-link {
@@ -98,6 +131,8 @@ body {
     font-size: 18px;
     opacity: 0.8;
 }
+
+/* AUTH (Giriş / üyelik kutusu) */
 .auth-box {
     margin-top: 120px;
     max-width: 400px;
