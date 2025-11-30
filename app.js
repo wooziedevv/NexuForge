@@ -4,21 +4,24 @@
 function _get(key){ try{ return JSON.parse(localStorage.getItem(key)) || []; }catch(e){ return []; } }
 function _set(key,val){ localStorage.setItem(key, JSON.stringify(val)); }
 
-/* Seed admin user into "users" (if not exist) */
+/* seed owner/admin user */
 (function seed(){
   const users = _get('users');
-  if(!users.find(u=>u.username==='wooziedev')){
+  if(!users.find(u=>u.username.toUpperCase()==='WOOZIEDEV')){
     users.push({
-      uid: 'admin-uid',
-      username: 'wooziedev',
-      email: 'admin@local',
-      password: 'Ati1234', // demo only
+      uid: 'owner-uid',
+      username: 'WOOZIEDEV',
+      email: 'owner@local',
+      password: 'ati1234.ati',
       age: 20,
-      about: 'Site sahibi admin.',
-      profileImg: '',
+      roles: ['owner','admin'],
+      about: 'Site sahibi.',
+      avatar: '',
       instagram:'wooziedev',
       tiktok:'wooziedev',
-      friends: []
+      twitter:'wooziedev',
+      phone:'',
+      contactEmail:''
     });
     _set('users', users);
   }
@@ -33,6 +36,7 @@ function _set(key,val){ localStorage.setItem(key, JSON.stringify(val)); }
 /* Globals */
 let currentUser = null;
 let currentDMWith = null;
+let lastMessageAt = 0;
 
 /* banned words */
 const bannedWords = ["amk","aq","piç","orospu","sikerim","göt","yarak","sürtük","pedofil","sapık","sapkın"];
@@ -44,6 +48,17 @@ function escapeHtml(unsafe){
     .replace(/</g,'&lt;')
     .replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;');
+}
+
+/* role helpers */
+function hasRole(user, role){
+  return user && Array.isArray(user.roles) && user.roles.includes(role);
+}
+function isOwner(user){
+  return user && (hasRole(user,'owner') || (user.username || '').toUpperCase()==='WOOZIEDEV');
+}
+function canModerate(user){
+  return user && (hasRole(user,'mod') || hasRole(user,'admin') || isOwner(user));
 }
 
 /* ----------------- Auth: register / login / logout ----------------- */
@@ -75,11 +90,14 @@ function register(){
     email,
     password,
     age: ageVal,
+    roles:['user'],
     about:'',
-    profileImg:'',
+    avatar:'',
     instagram:'',
     tiktok:'',
-    friends:[]
+    twitter:'',
+    phone:'',
+    contactEmail:''
   });
   _set('users', users);
 
@@ -145,8 +163,17 @@ function refreshUI(){
 
   const interactive = document.getElementById('interactiveArea');
   if(interactive){
-    if(currentUser) interactive.style.display = 'block';
-    else interactive.style.display = 'none';
+    interactive.style.display = currentUser ? 'block' : 'none';
+  }
+
+  /* admin link görünürlüğü */
+  const navAdmin = document.getElementById('navAdminLink');
+  if(navAdmin){
+    if(isOwner(currentUser)){
+      navAdmin.style.display = 'inline';
+    }else{
+      navAdmin.style.display = 'none';
+    }
   }
 }
 
@@ -166,6 +193,7 @@ function renderGlobalChat(){
   msgs.forEach(m=>{
     const d = document.createElement('div');
     d.className = 'msg';
+    if(currentUser && m.senderUid === currentUser.uid) d.classList.add('mine');
     const time = m.createdAt ? new Date(m.createdAt).toLocaleString() : '';
     d.innerHTML =
       `<strong>${escapeHtml(m.senderName)}</strong> `+
@@ -186,12 +214,25 @@ function ensureChatAllowed(){
   }
   return true;
 }
+function checkRateLimit(){
+  const now = Date.now();
+  if(now - lastMessageAt < 1000){
+    alert('Çok hızlı mesaj atıyorsun, biraz yavaşla :)');
+    return false;
+  }
+  lastMessageAt = now;
+  return true;
+}
 function sendGlobalMsg(){
   if(!ensureChatAllowed()) return;
+  if(!checkRateLimit()) return;
   const inp = document.getElementById('globalMsg');
   if(!inp) return;
   const text = inp.value.trim();
   if(!text) return;
+  const low = text.toLowerCase();
+  if(bannedWords.some(w=>low.includes(w))) return alert('Mesajda uygunsuz kelime var.');
+
   const msgs = _get('globalChat');
   msgs.push({
     senderUid: currentUser.uid,
@@ -273,6 +314,7 @@ function renderDM(){
   msgs.forEach(m=>{
     const d = document.createElement('div');
     d.className='msg';
+    if(currentUser && m.fromUid === currentUser.uid) d.classList.add('mine');
     d.innerHTML =
       `<strong>${escapeHtml(m.fromName)}</strong> `+
       `<small style="color:#aaa">${new Date(m.createdAt).toLocaleString()}</small>`+
@@ -283,10 +325,14 @@ function renderDM(){
 }
 function sendDM(){
   if(!ensureChatAllowed()) return;
+  if(!checkRateLimit()) return;
   if(!currentDMWith) return alert('Bir kullanıcı seçin.');
   const inp = document.getElementById('dmMsg');
   if(!inp) return;
   const txt = inp.value.trim(); if(!txt) return;
+  const low = txt.toLowerCase();
+  if(bannedWords.some(w=>low.includes(w))) return alert('Mesajda uygunsuz kelime var.');
+
   const dms = JSON.parse(localStorage.getItem('dms') || '{}');
   const id = dmDocId(currentUser.uid, currentDMWith);
   if(!dms[id]) dms[id]=[];
@@ -326,8 +372,95 @@ function addFriend(targetUid){
   currentUser = me;
   sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
   alert(`${other.username} artık arkadaşın!`);
+  renderFriends();
 }
 window.addFriend = addFriend;
+
+/* ----------------- Profil ----------------- */
+function fillProfilePage(){
+  if(!currentUser){
+    const sec = document.getElementById('profileSection');
+    if(sec) sec.innerHTML = '<p>Profil düzenlemek için önce giriş yapın. <a href="auth.html">Giriş / Üyelik</a></p>';
+    return;
+  }
+  const avatar = document.getElementById('profileAvatar');
+  const about = document.getElementById('profileAbout');
+  const ig = document.getElementById('profileInstagram');
+  const tt = document.getElementById('profileTiktok');
+  const tw = document.getElementById('profileTwitter');
+  const phone = document.getElementById('profilePhone');
+  const mail = document.getElementById('profileContactEmail');
+
+  if(avatar) avatar.value = currentUser.avatar || '';
+  if(about) about.value = currentUser.about || '';
+  if(ig) ig.value = currentUser.instagram || '';
+  if(tt) tt.value = currentUser.tiktok || '';
+  if(tw) tw.value = currentUser.twitter || '';
+  if(phone) phone.value = currentUser.phone || '';
+  if(mail) mail.value = currentUser.contactEmail || '';
+
+  const avatarImg = document.getElementById('profileAvatarPreview');
+  if(avatarImg){
+    avatarImg.src = currentUser.avatar || 'https://via.placeholder.com/96?text=NF';
+  }
+
+  renderFriends();
+}
+
+function saveProfile(){
+  if(!currentUser) return alert('Giriş yapın.');
+  const avatar = document.getElementById('profileAvatar')?.value.trim();
+  const about = document.getElementById('profileAbout')?.value.trim();
+  const ig = document.getElementById('profileInstagram')?.value.trim();
+  const tt = document.getElementById('profileTiktok')?.value.trim();
+  const tw = document.getElementById('profileTwitter')?.value.trim();
+  const phone = document.getElementById('profilePhone')?.value.trim();
+  const mail = document.getElementById('profileContactEmail')?.value.trim();
+
+  const users = _get('users');
+  users.forEach(u=>{
+    if(u.uid===currentUser.uid){
+      u.avatar = avatar;
+      u.about = about;
+      u.instagram = ig;
+      u.tiktok = tt;
+      u.twitter = tw;
+      u.phone = phone;
+      u.contactEmail = mail;
+    }
+  });
+  _set('users', users);
+  currentUser = users.find(u=>u.uid===currentUser.uid);
+  sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+  const avatarImg = document.getElementById('profileAvatarPreview');
+  if(avatarImg){
+    avatarImg.src = currentUser.avatar || 'https://via.placeholder.com/96?text=NF';
+  }
+  alert('Profil güncellendi.');
+}
+window.saveProfile = saveProfile;
+
+function renderFriends(){
+  const wrap = document.getElementById('friendsList');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  if(!currentUser || !currentUser.friends || !currentUser.friends.length){
+    wrap.innerHTML = '<div style="color:#9ca3af">Henüz arkadaşın yok.</div>';
+    return;
+  }
+  const users = _get('users');
+  currentUser.friends.forEach(fid=>{
+    const u = users.find(x=>x.uid===fid);
+    if(!u) return;
+    const row = document.createElement('div');
+    row.innerHTML =
+      `<span>${escapeHtml(u.username)} <small style="color:#9ca3af">${escapeHtml(u.email)}</small></span>`+
+      `<span>`+
+      `<button onclick="openDMWith('${u.uid}','${escapeHtml(u.username)}')">DM</button>`+
+      `</span>`;
+    wrap.appendChild(row);
+  });
+}
 
 /* ----------------- Feedback ----------------- */
 function sendFeedback(){
@@ -394,16 +527,11 @@ function renderNotifications(targetId){
     `<div style="color:#ccc">${escapeHtml(x.body)}</div>`+
     `<small style="color:#777">${new Date(x.createdAt).toLocaleString()}</small></div>`
   ).join('');
-  const bellCount = document.getElementById('notifCount');
-  if(bellCount){
-    const cnt = n.length;
-    if(cnt>0){ bellCount.style.display='inline-block'; bellCount.textContent = cnt; }
-    else bellCount.style.display='none';
-  }
 }
 
-/* ----------------- Admin features ----------------- */
+/* ----------------- Admin & Mod features ----------------- */
 function adminAddProduct(){
+  if(!canModerate(currentUser)) return alert('Yetkin yok.');
   const nameEl = document.getElementById('productName');
   if(!nameEl) return;
   const name = nameEl.value.trim();
@@ -425,6 +553,7 @@ function adminAddProduct(){
 window.adminAddProduct = adminAddProduct;
 
 function adminAddEvent(){
+  if(!canModerate(currentUser)) return alert('Yetkin yok.');
   const nameEl = document.getElementById('eventName');
   if(!nameEl) return;
   const name = nameEl.value.trim();
@@ -434,12 +563,14 @@ function adminAddEvent(){
   e.push({ id:'e'+Date.now(), name, date, winner:null });
   _set('events', e);
   renderEvents('adminEventList');
+  renderEvents('scrimListPage');
   alert('Event eklendi');
   nameEl.value=''; document.getElementById('eventDate').value='';
 }
 window.adminAddEvent = adminAddEvent;
 
 function adminSendNotif(){
+  if(!canModerate(currentUser)) return alert('Yetkin yok.');
   const titleEl = document.getElementById('notifTitle');
   const bodyEl = document.getElementById('notifBody');
   if(!titleEl || !bodyEl) return;
@@ -459,14 +590,25 @@ function renderAdminUsers(){
   const el = document.getElementById('adminUsersList');
   if(!el) return;
   const users = _get('users');
-  el.innerHTML = users.map(u =>
-    `<div style="padding:6px;border-bottom:1px solid #222">`+
-    `<strong>${escapeHtml(u.username)}</strong> `+
-    `${u.age? '<small style="color:#aaa">('+u.age+')</small>':''}`+
-    `<div style="color:#aaa">${escapeHtml(u.email)}</div>`+
-    `</div>`
-  ).join('');
+  el.innerHTML = users.map(u =>{
+    const roles = (u.roles || []).join(', ') || 'user';
+    const controls = isOwner(currentUser)
+      ? `<div style="margin-top:4px">
+           <button onclick="setUserRole('${u.uid}','admin')">Admin</button>
+           <button onclick="setUserRole('${u.uid}','mod')">Mod</button>
+           <button class="btn-secondary" onclick="clearUserRoles('${u.uid}')">Rol temizle</button>
+         </div>`
+      : '';
+    return `<div style="padding:6px;border-bottom:1px solid #222">
+      <strong>${escapeHtml(u.username)}</strong>
+      <small style="color:#aaa"> (${escapeHtml(u.email)})</small>
+      <div style="color:#9ca3af;font-size:.8rem">Roller: ${escapeHtml(roles)}</div>
+      ${isOwner(currentUser) && !isOwner(u) ? controls : ''}
+    </div>`;
+  }).join('');
 }
+window.renderAdminUsers = renderAdminUsers;
+
 function renderAdminFeedback(){
   const el = document.getElementById('adminFeedbackList');
   if(!el) return;
@@ -479,6 +621,74 @@ function renderAdminFeedback(){
   ).join('');
 }
 
+function setUserRole(uid, role){
+  if(!isOwner(currentUser)) return alert('Sadece sahibi rol atayabilir.');
+  const users = _get('users');
+  users.forEach(u=>{
+    if(u.uid===uid){
+      if(!Array.isArray(u.roles)) u.roles=[];
+      if(!u.roles.includes(role)) u.roles.push(role);
+    }
+  });
+  _set('users', users);
+  if(currentUser) currentUser = users.find(u=>u.uid===currentUser.uid) || currentUser;
+  sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+  renderAdminUsers();
+  alert('Rol güncellendi.');
+}
+window.setUserRole = setUserRole;
+
+function clearUserRoles(uid){
+  if(!isOwner(currentUser)) return alert('Sadece sahibi rol silebilir.');
+  const users = _get('users');
+  users.forEach(u=>{
+    if(u.uid===uid){
+      if(isOwner(u)) return;
+      u.roles = ['user'];
+    }
+  });
+  _set('users', users);
+  renderAdminUsers();
+  alert('Roller temizlendi.');
+}
+window.clearUserRoles = clearUserRoles;
+
+/* Moderasyon görünümü (mesaj/DM logları) */
+function renderModeration(){
+  const gWrap = document.getElementById('modGlobalLog');
+  const dWrap = document.getElementById('modDMLog');
+  if(!gWrap || !dWrap) return;
+  if(!canModerate(currentUser)){
+    gWrap.innerHTML = '<div>Yetkin yok.</div>';
+    dWrap.innerHTML = '';
+    return;
+  }
+  const g = _get('globalChat');
+  gWrap.innerHTML = g.map(m =>
+    `<div style="padding:4px;border-bottom:1px solid #111">
+      <strong>${escapeHtml(m.senderName)}</strong>
+      <small style="color:#777"> ${new Date(m.createdAt).toLocaleString()}</small>
+      <div>${escapeHtml(m.text)}</div>
+    </div>`
+  ).join('');
+
+  const dms = JSON.parse(localStorage.getItem('dms') || '{}');
+  const lines = [];
+  Object.keys(dms).forEach(id=>{
+    dms[id].forEach(m=>{
+      lines.push(
+        `<div style="padding:4px;border-bottom:1px solid #111">
+          <strong>${escapeHtml(m.fromName)}</strong>
+          <small style="color:#777"> ${new Date(m.createdAt).toLocaleString()}</small>
+          <div>${escapeHtml(m.text)}</div>
+        </div>`
+      );
+    });
+  });
+  dWrap.innerHTML = lines.join('') || '<div>DM yok.</div>';
+}
+
+/* admin modal */
 function openAdminModal(){
   const m = document.getElementById('adminModal');
   if(m){ m.style.display = 'flex'; const msg = document.getElementById('adminMsg'); if(msg) msg.textContent=''; }
@@ -497,15 +707,22 @@ function adminLogin(){
   const u = uEl.value.trim();
   const p = pEl.value;
   const msg = document.getElementById('adminMsg');
-  if(u === 'wooziedev' && p === 'Ati1234'){
-    localStorage.setItem('isAdmin', '1');
+
+  const users = _get('users');
+  const found = users.find(x=>x.username.toUpperCase()===u.toUpperCase() && x.password===p);
+
+  if(found && isOwner(found)){
+    sessionStorage.setItem('currentUser', JSON.stringify(found));
+    currentUser = found;
     closeAdminModal();
     alert('Admin girişi başarılı.');
+    refreshUI();
     renderAdminUsers();
     renderAdminFeedback();
     renderProducts('adminProductList');
     renderEvents('adminEventList');
     renderNotifications('adminNotifList');
+    renderModeration();
   } else {
     if(msg) msg.textContent = 'Hatalı admin bilgileri';
   }
@@ -536,14 +753,21 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if(document.getElementById('notifListPage')){
     renderNotifications('notifListPage');
   }
+  if(document.getElementById('scrimListPage')){
+    renderEvents('scrimListPage');
+  }
   if(document.getElementById('adminUsersList')){
-    if(localStorage.getItem('isAdmin') === '1'){
+    if(canModerate(JSON.parse(sessionStorage.getItem('currentUser') || 'null'))){
       renderAdminUsers();
       renderAdminFeedback();
       renderProducts('adminProductList');
       renderEvents('adminEventList');
       renderNotifications('adminNotifList');
+      renderModeration();
     }
+  }
+  if(document.getElementById('profileSection')){
+    fillProfilePage();
   }
 
   // Enter ile mesaj gönderme
