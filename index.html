@@ -17,13 +17,15 @@
       </svg>
     </div>
     <nav style="margin-left:12px">
-      <a href="index.html">Ana Sayfa</a>
+      <a href="index.html" class="active">Ana Sayfa</a>
       <a href="products.html">Ürünler</a>
+      <a href="scrims.html">Scrim / Eventler</a>
       <a href="notifications.html">Bildirimler</a>
       <a href="auth.html">Giriş / Üyelik</a>
+      <a href="profile.html">Profil</a>
       <a href="about.html">Hakkımızda</a>
       <a href="contact.html">İletişim</a>
-      <a href="admin.html">Admin</a>
+      <a href="admin.html" id="navAdminLink">Admin</a>
     </nav>
   </div>
   <div id="headerUser" style="font-size:.9rem;color:#ccc">Giriş durumu yükleniyor...</div>
@@ -35,7 +37,7 @@
   </section>
 
   <h2>Genel Sohbet & DM</h2>
-  <p>Genel sohbet ve DM kullanmak için önce <a href="auth.html" style="color:#fff;text-decoration:underline">giriş yapın</a>.</p>
+  <p>Genel sohbet ve DM kullanmak için önce <a href="auth.html" style="color:#fff;text-decoration:underline">giriş yapın</a> ve yaşınızı girerek üye olun (13+).</p>
 
   <section id="interactiveArea" style="display:none;margin-top:20px">
     <div class="chat-layout">
@@ -52,7 +54,7 @@
         <div class="chat-box">
           <h3>DM / Kullanıcı Ara</h3>
           <input id="searchUserInput" class="input" placeholder="Kullanıcı adı veya e-mail ara" oninput="searchUsersDebounced()" />
-          <ul id="searchResults" style="margin:8px 0;padding:0;max-height:140px;overflow:auto;list-style:none"></ul>
+          <ul id="searchResults" style="max-height:200px;overflow:auto;"></ul>
         </div>
         <div class="chat-box" style="margin-top:12px">
           <h3>DM: <span id="dmWith">—</span></h3>
