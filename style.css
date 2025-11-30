@@ -90,3 +90,10 @@ body{
   border-radius:12px;
   margin-left:2px;
 }
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+}
