@@ -107,21 +107,38 @@ function register(){
 }
 window.register = register;
 
-function login(){
-  const emailEl = document.getElementById('loginEmail');
-  const pwdEl = document.getElementById('loginPassword');
-  if(!emailEl || !pwdEl) return;
-  const email = emailEl.value.trim();
-  const password = pwdEl.value;
-  const users = _get('users');
-  const user = users.find(u=>u.email.toLowerCase()===email.toLowerCase() && u.password===password);
-  if(!user) return alert('E-mail veya şifre yanlış.');
-  sessionStorage.setItem('currentUser', JSON.stringify(user));
-  currentUser = user;
-  refreshUI();
-}
-window.login = login;
+function login() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
 
+  const users = _get('users'); // localStorage kullanıcı listesi
+  const user = users.find(u =>
+    u.email.toLowerCase() === email.toLowerCase() &&
+    u.password === password
+  );
+
+  if (!user) {
+    alert("E-mail veya şifre yanlış.");
+    return;
+  }
+
+  // Başarıyla giriş
+  currentUser = user;
+  sessionStorage.setItem('currentUser', JSON.stringify(user));
+
+  // --- ADMIN KONTROLÜ ---
+  const adminBtn = document.getElementById("adminPanelBtn");
+
+  if (user.username === "WOOZIEDEV" && user.password === "ati1234.ati") {
+    adminBtn.style.display = "inline-block";   // admin görünsün
+    user.role = "admin";
+  } else {
+    adminBtn.style.display = "none";           // diğer herkese gizli
+  }
+
+  refreshUIOnAuth();
+  alert("Giriş başarılı!");
+}
 function logout(){
   sessionStorage.removeItem('currentUser');
   currentUser = null;
