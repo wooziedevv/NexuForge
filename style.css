@@ -1,45 +1,30 @@
-/* ==========================
-    GENEL TEMA (KOYU)
-========================== */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Inter', sans-serif;
-}
-
 body{
-  background:#0c0c0c;
+  margin:0;
+  background:#0a0a0a;
   color:#fff;
-  overflow-x:hidden;
+  font-family:Arial, sans-serif;
 }
 
-/* ==========================
-      GLASSMORPHISM HEADER
-========================== */
 .glass-header{
   width:100%;
   height:70px;
-  position:fixed;
-  top:0;
-  left:0;
-  background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(12px);
   display:flex;
   justify-content:space-between;
   align-items:center;
   padding:0 20px;
-  border-bottom:1px solid rgba(255,255,255,0.08);
+  position:fixed;
+  top:0;
+  left:0;
   z-index:1000;
+  border-bottom:1px solid rgba(255,255,255,0.15);
 }
 
-.logo-text{
-  font-size:22px;
+.logo{
+  font-size:24px;
+  cursor:pointer;
   font-weight:700;
-  background:linear-gradient(90deg,#6d28d9,#38bdf8);
-  -webkit-background-clip:text;
-  color:transparent;
 }
 
 .menu-icons{
@@ -48,211 +33,60 @@ body{
   gap:20px;
 }
 
-.notif-bell{
-  cursor:pointer;
-  position:relative;
-  font-size:22px;
-}
-
-.notif-count{
-  position:absolute;
-  top:-5px;
-  right:-8px;
-  background:#ff4444;
-  color:#fff;
-  font-size:11px;
-  padding:2px 6px;
-  border-radius:50%;
-}
-
 .hamburger{
-  font-size:30px;
   cursor:pointer;
+  font-size:28px;
 }
 
-/* ==========================
-      SAĞDAN AÇILIR MENÜ
-========================== */
-.side-menu{
+.sidebar{
   position:fixed;
   top:0;
-  right:-320px;
+  right:-300px;
   width:300px;
   height:100vh;
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
+  background:#111;
   padding:20px;
-  box-shadow:-8px 0 25px rgba(0,0,0,0.4);
-  transition:0.35s ease;
+  transition:0.3s;
   z-index:2000;
 }
 
-.side-menu.open{
+.sidebar.open{
   right:0;
 }
 
-.menu-header{
+.sidebar-header{
   display:flex;
   justify-content:space-between;
-  align-items:center;
+  font-size:20px;
   margin-bottom:20px;
 }
 
-.close-menu{
-  font-size:28px;
-  cursor:pointer;
-}
-
-/* Menü itemleri */
-.menu-item{
+.sidebar a{
   display:block;
-  padding:12px 15px;
-  margin-bottom:10px;
-  border-radius:10px;
-  color:#fff;
-  text-decoration:none;
-  background:rgba(255,255,255,0.05);
-  transition:0.2s;
-  border:1px solid rgba(255,255,255,0.08);
-}
-
-.menu-item:hover{
-  background:rgba(255,255,255,0.15);
-}
-
-/* Logout */
-.logout-btn{
-  width:100%;
   padding:12px;
-  margin-top:20px;
-  border:none;
-  border-radius:10px;
-  font-size:16px;
-  font-weight:600;
-  cursor:pointer;
-  background:linear-gradient(90deg,#ef4444,#dc2626);
-  color:#fff;
+  margin-bottom:8px;
+  color:#eee;
+  text-decoration:none;
+  background:#181818;
+  border-radius:8px;
 }
 
-/* Overlay karartma */
-.overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.55);
-  display:none;
-  z-index:1500;
-}
-
-.overlay.active{
-  display:block;
-}
-
-/* ==========================
-        HERO
-========================== */
 .hero{
-  width:100%;
-  height:380px;
+  height:350px;
   background:url('https://r.resimlink.com/eW-gkBi17DO.jpeg') center/cover no-repeat;
   display:flex;
   justify-content:center;
   align-items:center;
-  margin-top:70px;
   flex-direction:column;
   text-align:center;
+  margin-top:70px;
 }
 
-.hero h1{
-  font-size:3rem;
-  font-weight:800;
-  background:rgba(0,0,0,0.6);
-  padding:14px 28px;
-  border-radius:14px;
-}
-
-.hero-sub{
-  margin-top:10px;
-  font-size:18px;
-  opacity:0.8;
-}
-
-/* ==========================
-      ANA İÇERİK
-========================== */
-.main-content{
-  max-width:1000px;
-  margin:40px auto;
-  padding:20px;
-}
-
-.glass-box{
-  background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(8px);
-  padding:20px;
-  border-radius:14px;
-  margin-bottom:20px;
-  border:1px solid rgba(255,255,255,0.08);
-}
-
-.glass-btn{
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(6px);
-  padding:10px 20px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,0.1);
-  cursor:pointer;
+#notifCount{
+  font-size:11px;
+  background:#ff4444;
   color:#fff;
-  transition:0.25s;
-}
-
-.glass-btn:hover{
-  background:rgba(255,255,255,0.2);
-}
-
-/* ==========================
-      CHAT BOX
-========================== */
-.chat-box{
-  max-height:260px;
-  overflow-y:auto;
-  background:rgba(255,255,255,0.03);
-  border-radius:10px;
-  padding:10px;
-}
-
-.chat-input{
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,0.1);
-  background:rgba(0,0,0,0.4);
-  color:#fff;
-}
-
-.chat-input-row{
-  display:flex;
-  gap:10px;
-  margin-top:12px;
-}
-
-.msg{
-  padding:8px;
-  margin-bottom:8px;
-  background:rgba(255,255,255,0.05);
-  border-radius:8px;
-}
-
-/* ==========================
-        FOOTER
-========================== */
-.footer{
-  padding:20px;
-  margin-top:30px;
-  text-align:center;
-  opacity:0.5;
-  font-size:14px;
+  padding:2px 6px;
+  border-radius:12px;
+  margin-left:2px;
 }
