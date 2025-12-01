@@ -1,1 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scrim / Eventler – NexuForge</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="overlay"></div>
 
+  <header class="header">
+    <div class="logo" onclick="window.location='index.html'">NEXUFORGE</div>
+    <div class="header-right">
+      <div class="notif" onclick="window.location='notifications.html'">🔔<span id="notifCount" class="notif-count">0</span></div>
+      <div id="menuToggle" class="edge-toggle">‹</div>
+    </div>
+  </header>
+
+  <nav id="sidebar" class="sidebar">
+    <button id="closeSidebar" class="close-btn">✕</button>
+    <a href="index.html">🏠 Ana Sayfa</a>
+    <a href="products.html">🛒 Ürünler</a>
+    <a href="scrims.html">🎮 Scrim / Event</a>
+    <a href="dm.html">💬 Mesajlar</a>
+    <a href="profile.html">👤 Profilim</a>
+    <a href="auth.html">🔐 Giriş / Üyelik</a>
+    <a href="about.html">ℹ️ Hakkımızda</a>
+    <a href="contact.html">📞 İletişim</a>
+    <a id="adminPanelBtn" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
+  </nav>
+
+  <main class="page">
+    <h2>Scrim / Eventler</h2>
+    <div id="scrimList" class="card-grid"></div>
+    <p class="muted">Event ekleme / düzenleme admin panelden yapılır.</p>
+  </main>
+
+  <script src="js/utils.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/scrims.js"></script>
+</body>
+</html>
