@@ -1,48 +1,67 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Giriş / Üyelik – NexuForge</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giriş / Üyelik – NexuForge</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<header class="header">
-    <div class="logo" onclick="window.location='index.html'">NEXUFORGE</div>
-    <div class="header-right">
-        <div id="hamburger" class="hamburger">☰</div>
-    </div>
-</header>
+  <div id="overlay"></div>
 
-<div id="sidebar" class="sidebar">
+  <header class="header">
+    <div class="logo" onclick="window.location='index.html'">
+      NEXUFORGE
+    </div>
+
+    <div class="header-right">
+      <div class="notif" onclick="window.location='notifications.html'">🔔<span id="notifCount" class="notif-count">0</span></div>
+      <div id="menuToggle" class="edge-toggle">‹</div>
+    </div>
+  </header>
+
+  <nav id="sidebar" class="sidebar">
     <button id="closeSidebar" class="close-btn">✕</button>
     <a href="index.html">🏠 Ana Sayfa</a>
+    <a href="products.html">🛒 Ürünler</a>
+    <a href="scrims.html">🎮 Scrim / Event</a>
+    <a href="dm.html">💬 Mesajlar</a>
+    <a href="profile.html">👤 Profilim</a>
+    <a href="auth.html">🔐 Giriş / Üyelik</a>
     <a href="about.html">ℹ️ Hakkımızda</a>
     <a href="contact.html">📞 İletişim</a>
-</div>
+    <a id="adminPanelBtn" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
+  </nav>
 
-<section class="auth-box">
-    <h2>Giriş / Üye Ol</h2>
+  <main class="page">
+    <section class="auth-box">
+      <h2>Giriş / Üyelik</h2>
 
-    <div class="auth-section">
-        <h3>Kayıt Ol</h3>
-        <input id="reg_username" placeholder="Kullanıcı adı">
-        <input id="reg_email" placeholder="E-mail">
-        <input id="reg_password" type="password" placeholder="Şifre">
-        <button onclick="registerUser()">Kayıt Ol</button>
-    </div>
+      <div class="auth-cols">
+        <div class="auth-section">
+          <h3>Kayıt Ol</h3>
+          <input id="reg_username" placeholder="Kullanıcı adı">
+          <input id="reg_email" placeholder="E-mail">
+          <input id="reg_password" type="password" placeholder="Şifre">
+          <button onclick="registerUser()">Kayıt Ol</button>
+        </div>
 
-    <div class="auth-section">
-        <h3>Giriş Yap</h3>
-        <input id="login_email" placeholder="E-mail">
-        <input id="login_password" type="password" placeholder="Şifre">
-        <button onclick="loginUser()">Giriş</button>
-    </div>
-</section>
+        <div class="auth-section">
+          <h3>Giriş Yap</h3>
+          <input id="login_email" placeholder="E-mail">
+          <input id="login_password" type="password" placeholder="Şifre">
+          <button onclick="loginUser()">Giriş</button>
+          <button class="secondary" onclick="logoutUser()">Çıkış Yap</button>
+        </div>
+      </div>
 
-<script src="js/ui.js"></script>
-<script src="js/auth.js"></script>
+      <p class="auth-info" id="authStatus"></p>
+    </section>
+  </main>
 
+  <script src="js/utils.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
 </body>
 </html>
