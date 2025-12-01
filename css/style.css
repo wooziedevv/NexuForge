@@ -1,4 +1,4 @@
-body {
+ body {
     margin: 0;
     background: #0a0a0a;
     font-family: Arial, sans-serif;
@@ -31,7 +31,8 @@ body {
 .header-right {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 18px;
+    padding-right: 25px; /* SAĞDAN PARMAK BOYU KADAR MESAFE */
 }
 
 .hamburger {
