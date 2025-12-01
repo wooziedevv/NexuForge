@@ -1,37 +1,36 @@
-const sidebar = document.getElementById("sidebar");
-const hamburger = document.getElementById("hamburger");
-const closeSidebar = document.getElementById("closeSidebar");
-
-hamburger.onclick = () => {
-    sidebar.classList.add("open");
-};
-
-closeSidebar.onclick = () => {
-    sidebar.classList.remove("open");
-};
-
-/* ADMIN GÖRÜNÜRLÜK */
-const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-const adminBtn = document.getElementById("adminPanelBtn");
-
-if (currentUser && currentUser.username === "Wooziedev111") {
-    adminBtn.style.display = "block";
-} else {
-    adminBtn.style.display = "none";
+function getUsers() {
+  return JSON.parse(localStorage.getItem("users") || "[]");
 }
-const overlay = document.getElementById("overlay");
 
-hamburger.onclick = () => {
-    sidebar.classList.add("open");
-    overlay.classList.add("active");
-};
+function saveUsers(users) {
+  localStorage.setItem("users", JSON.stringify(users));
+}
 
-closeSidebar.onclick = () => {
-    sidebar.classList.remove("open");
-    overlay.classList.remove("active");
-};
+function getCurrentUser() {
+  const raw = localStorage.getItem("currentUser");
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
 
-overlay.onclick = () => {
-    sidebar.classList.remove("open");
-    overlay.classList.remove("active");
-};
+function saveCurrentUser(user) {
+  localStorage.setItem("currentUser", JSON.stringify(user));
+}
+
+/* ADMIN SEED – Wooziedev111 */
+(function seedAdmin() {
+  let users = getUsers();
+  if (!users.some(u => u.username === "Wooziedev111")) {
+    users.push({
+      uid: "admin-" + Date.now(),
+      username: "Wooziedev111",
+      email: "admin@nexuforge.local",
+      password: "ati1234.ati",
+      role: "admin"
+    });
+    saveUsers(users);
+  }
+})();
