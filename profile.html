@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profilim – NexuForge</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="overlay"></div>
 
+  <header class="header">
+    <div class="logo" onclick="window.location='index.html'">NEXUFORGE</div>
+    <div class="header-right">
+      <div class="notif" onclick="window.location='notifications.html'">🔔<span id="notifCount" class="notif-count">0</span></div>
+      <div id="menuToggle" class="edge-toggle">‹</div>
+    </div>
+  </header>
+
+  <nav id="sidebar" class="sidebar">
+    <button id="closeSidebar" class="close-btn">✕</button>
+    <a href="index.html">🏠 Ana Sayfa</a>
+    <a href="products.html">🛒 Ürünler</a>
+    <a href="scrims.html">🎮 Scrim / Event</a>
+    <a href="dm.html">💬 Mesajlar</a>
+    <a href="profile.html">👤 Profilim</a>
+    <a href="auth.html">🔐 Giriş / Üyelik</a>
+    <a href="about.html">ℹ️ Hakkımızda</a>
+    <a href="contact.html">📞 İletişim</a>
+    <a id="adminPanelBtn" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
+  </nav>
+
+  <main class="page">
+    <section class="profile-card">
+      <h2>Profilim</h2>
+      <img id="profileImg" src="https://via.placeholder.com/100" alt="Profil">
+
+      <input id="profile_about" placeholder="Hakkımda">
+      <input id="profile_instagram" placeholder="Instagram kullanıcı adı">
+      <input id="profile_tiktok" placeholder="TikTok kullanıcı adı">
+      <input id="profile_twitter" placeholder="X (Twitter) kullanıcı adı">
+      <input id="profile_phone" placeholder="Telefon (isteğe bağlı)">
+      <input id="profile_email_public" placeholder="Genel görünen e-mail (isteğe bağlı)">
+      <button onclick="saveProfile()">Profili Kaydet</button>
+
+      <p id="profileStatus"></p>
+    </section>
+  </main>
+
+  <script src="js/utils.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
