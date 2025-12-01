@@ -1,46 +1,56 @@
-/* Kullanıcı Listesi */
-if (!localStorage.getItem("users")) {
-    localStorage.setItem("users", JSON.stringify([]));
-}
+const bannedWords = ["amk","aq","piç","orospu","sikerim","göt","yarak","sürtük","pedofil","sapık","sapkın"];
 
-/* Kayıt */
 function registerUser() {
-    let username = document.getElementById("reg_username").value.trim();
-    let email = document.getElementById("reg_email").value.trim();
-    let password = document.getElementById("reg_password").value;
+  const username = document.getElementById("regUsername").value.trim();
+  const email = document.getElementById("regEmail").value.trim().toLowerCase();
+  const password = document.getElementById("regPassword").value;
 
-    let users = JSON.parse(localStorage.getItem("users"));
+  if (!username || !email || !password) {
+    return alert("Tüm alanları doldurun.");
+  }
 
-    if (users.find(u => u.email === email)) {
-        alert("Bu e-mail zaten kullanılıyor.");
-        return;
-    }
+  const low = username.toLowerCase();
+  if (bannedWords.some(w => low.includes(w))) {
+    return alert("Kullanıcı adı uygun değil.");
+  }
 
-    users.push({
-        username,
-        email,
-        password,
-        uid: "u" + Date.now()
-    });
+  let users = getUsers();
+  if (users.some(u => u.email === email)) {
+    return alert("Bu e-posta zaten kayıtlı.");
+  }
+  if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+    return alert("Bu kullanıcı adı alınmış.");
+  }
 
-    localStorage.setItem("users", JSON.stringify(users));
+  const newUser = {
+    uid: "u" + Date.now(),
+    username,
+    email,
+    password,
+    role: "user"
+  };
 
-    alert("Kayıt başarılı!");
+  users.push(newUser);
+  saveUsers(users);
+  alert("Kayıt başarılı. Giriş yapabilirsiniz.");
 }
 
-/* Giriş */
 function loginUser() {
-    let email = document.getElementById("login_email").value.trim();
-    let password = document.getElementById("login_password").value;
+  const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+  const password = document.getElementById("loginPassword").value;
+  const info = document.getElementById("loginInfo");
 
-    let users = JSON.parse(localStorage.getItem("users"));
+  let users = getUsers();
+  const user = users.find(u => u.email === email && u.password === password);
 
-    let user = users.find(u => u.email === email && u.password === password);
+  if (!user) {
+    info.textContent = "E-posta veya şifre hatalı.";
+    return;
+  }
 
-    if (!user) return alert("Hatalı giriş!");
-
-    localStorage.setItem("currentUser", JSON.stringify(user));
-
-    alert("Giriş başarılı!");
-    window.location = "index.html";
+  saveCurrentUser(user);
+  info.textContent = `Giriş başarılı: ${user.username}`;
+  setTimeout(() => {
+    location.href = "index.html";
+  }, 600);
 }
