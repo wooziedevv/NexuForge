@@ -1,1 +1,49 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hakkımızda – NexuForge</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
 
+  <div id="overlay"></div>
+
+  <header class="header">
+    <div class="logo" onclick="location.href='index.html'">NexuForge</div>
+    <div class="header-right">
+      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
+      <div id="menuToggle" class="edge-toggle">‹</div>
+    </div>
+  </header>
+
+  <nav id="sidebar" class="sidebar">
+    <button id="closeSidebar" class="close-btn">✕</button>
+
+    <a href="index.html">🏠 Ana Sayfa</a>
+    <a href="products.html">🛒 Ürünler</a>
+    <a href="scrims.html">🎮 Scrim / Event</a>
+    <a href="dm.html">💬 Sohbet / DM</a>
+    <a href="profile.html">👤 Profilim</a>
+    <a href="auth.html">🔐 Giriş / Üyelik</a>
+    <a href="about.html">ℹ️ Hakkımızda</a>
+    <a href="contact.html">📞 İletişim</a>
+
+    <a id="adminLink" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
+  </nav>
+
+  <main class="main">
+    <section class="page-section">
+      <h2>Hakkımızda</h2>
+      <p>
+        Merhaba, ben Ata Göçke (WoozieDev). NexuForge, e-spor, topluluk ve yazılımı birleştiren
+        bir proje. B2G/DEV E-Sports takımı ve topluluk platformu bu çatının altında.
+      </p>
+    </section>
+  </main>
+
+  <script src="js/utils.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
