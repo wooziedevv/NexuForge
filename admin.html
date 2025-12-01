@@ -1,1 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel – NexuForge</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
 
+  <div id="overlay"></div>
+
+  <header class="header">
+    <div class="logo" onclick="location.href='index.html'">NexuForge</div>
+    <div class="header-right">
+      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
+      <div id="menuToggle" class="edge-toggle">‹</div>
+    </div>
+  </header>
+
+  <nav id="sidebar" class="sidebar">
+    <button id="closeSidebar" class="close-btn">✕</button>
+
+    <a href="index.html">🏠 Ana Sayfa</a>
+    <a href="products.html">🛒 Ürünler</a>
+    <a href="scrims.html">🎮 Scrim / Event</a>
+    <a href="dm.html">💬 Sohbet / DM</a>
+    <a href="profile.html">👤 Profilim</a>
+    <a href="auth.html">🔐 Giriş / Üyelik</a>
+    <a href="about.html">ℹ️ Hakkımızda</a>
+    <a href="contact.html">📞 İletişim</a>
+
+    <a id="adminLink" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
+  </nav>
+
+  <main class="main">
+    <section class="page-section">
+      <h2>Admin Panel</h2>
+      <p class="small-text" id="adminStatus"></p>
+
+      <div class="admin-grid">
+        <div class="card">
+          <h3>Kullanıcılar</h3>
+          <div id="userList"></div>
+        </div>
+
+        <div class="card">
+          <h3>Ürün Ekle (demo)</h3>
+          <input id="prodName" placeholder="Ürün adı" />
+          <input id="prodPrice" type="number" placeholder="Fiyat (TL)" />
+          <button onclick="adminAddProduct()">Ürün Ekle</button>
+        </div>
+
+        <div class="card">
+          <h3>Scrim / Event Ekle (demo)</h3>
+          <input id="eventName" placeholder="Etkinlik adı" />
+          <input id="eventDate" placeholder="Tarih / saat" />
+          <button onclick="adminAddScrim()">Etkinlik Ekle</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/utils.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
