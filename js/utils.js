@@ -20,17 +20,37 @@ function saveCurrentUser(user) {
   localStorage.setItem("currentUser", JSON.stringify(user));
 }
 
-/* ADMIN SEED – Wooziedev111 */
+/* --- Admin hesabı otomatik oluştur / güncelle --- */
+
 (function seedAdmin() {
-  let users = getUsers();
-  if (!users.some(u => u.username === "Wooziedev111")) {
-    users.push({
-      uid: "admin-" + Date.now(),
+  const users = getUsers();
+
+  // Eski veya yeni admin hesabını bul
+  let adminUser = users.find(
+    u =>
+      u.email === "admin@nexuforge.local" ||
+      u.username === "Wooziedev111" ||        // eski
+      u.username === "Wooziedev11"           // yeni
+  );
+
+  if (adminUser) {
+    // Varsa bilgilerini güncelle
+    adminUser.username = "Wooziedev11";
+    adminUser.email    = "admin@nexuforge.local";
+    adminUser.password = "ati1234.ati";
+    adminUser.role     = "admin";
+  } else {
+    // Yoksa yeni admin oluştur
+    adminUser = {
+      uid: "admin-1",
       username: "Wooziedev11",
       email: "admin@nexuforge.local",
       password: "ati1234.ati",
-      role: "admin"
-    });
-    saveUsers(users);
+      role: "admin",
+      profile: {}
+    };
+    users.push(adminUser);
   }
+
+  saveUsers(users);
 })();
