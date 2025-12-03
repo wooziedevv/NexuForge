@@ -1,50 +1,30 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ürünler – NexuForge</title>
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
+// js/products.js
 
-  <div id="overlay"></div>
+(function renderProducts() {
+  const el = document.getElementById("productList");
+  const products = safeParse("products", []);
 
-  <header class="header">
-    <div class="logo" onclick="location.href='index.html'">NexuForge</div>
-    <div class="header-right">
-      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
-      <button class="icon-btn" onclick="location.href='dm.html'">👥</button>
-      <div id="menuToggle" class="edge-toggle">‹</div>
-    </div>
-  </header>
+  if (!products.length) {
+    el.innerHTML = "<p>Henüz ürün eklenmemiş.</p>";
+    return;
+  }
 
-  <nav id="sidebar" class="sidebar">
-    <button id="closeSidebar" class="close-btn">✕</button>
+  el.innerHTML = "";
+  products.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "product-card";
 
-    <a href="index.html" class="nav-guest-only">🏠 Ana Sayfa</a>
-    <a href="auth.html"  class="nav-guest-only">🔐 Giriş / Üyelik</a>
+    const stockClass = p.stock > 0 ? "product-stock" : "product-stock out";
+    const stockText  = p.stock > 0 ? `Stok: ${p.stock}` : "Tükendi";
 
-    <a href="products.html">🛒 Ürünler</a>
-    <a href="scrims.html">🎮 Scrim / Event</a>
-    <a href="dm.html">💬 Sohbet / DM</a>
-    <a href="profile.html">👤 Profilim</a>
-    <a href="settings.html" class="nav-auth-only">⚙️ Ayarlar</a>
-    <a href="about.html">ℹ️ Hakkımızda</a>
-    <a href="contact.html">📞 İletişim</a>
-
-    <a id="adminLink" href="admin.html" class="admin-link">⚡ Admin Panel</a>
-  </nav>
-
-  <main class="main">
-    <section class="page-section">
-      <h2>Ürünler</h2>
-      <div id="productList" class="product-grid"></div>
-    </section>
-  </main>
-
-  <script src="js/utils.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/products.js"></script>
-</body>
-</html>
+    div.innerHTML = `
+      <img src="${p.imageUrl || "https://via.placeholder.com/400x240?text=NexuForge"}" alt="${p.name}">
+      <div class="product-body">
+        <div class="product-title">${p.name}</div>
+        <div class="product-price">${p.price} TL</div>
+        <div class="${stockClass}">${stockText}</div>
+      </div>
+    `;
+    el.appendChild(div);
+  });
+})();
