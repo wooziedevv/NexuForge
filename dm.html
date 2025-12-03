@@ -1,61 +1,89 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mesajlar – NexuForge</title>
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sohbet / DM – NexuForge</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+
   <div id="overlay"></div>
 
   <header class="header">
-    <div class="logo" onclick="window.location='index.html'">NEXUFORGE</div>
+    <div class="logo" onclick="location.href='index.html'">NexuForge</div>
     <div class="header-right">
-      <div class="notif" onclick="window.location='notifications.html'">🔔<span id="notifCount" class="notif-count">0</span></div>
+      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
+      <button class="icon-btn" onclick="location.href='dm.html'">👥</button>
       <div id="menuToggle" class="edge-toggle">‹</div>
     </div>
   </header>
 
   <nav id="sidebar" class="sidebar">
     <button id="closeSidebar" class="close-btn">✕</button>
-    <a href="index.html">🏠 Ana Sayfa</a>
+
+    <a href="index.html" class="nav-guest-only">🏠 Ana Sayfa</a>
+    <a href="auth.html"  class="nav-guest-only">🔐 Giriş / Üyelik</a>
+
     <a href="products.html">🛒 Ürünler</a>
     <a href="scrims.html">🎮 Scrim / Event</a>
-    <a href="dm.html">💬 Mesajlar</a>
+    <a href="dm.html">💬 Sohbet / DM</a>
     <a href="profile.html">👤 Profilim</a>
-    <a href="auth.html">🔐 Giriş / Üyelik</a>
+    <a href="settings.html" class="nav-auth-only">⚙️ Ayarlar</a>
     <a href="about.html">ℹ️ Hakkımızda</a>
     <a href="contact.html">📞 İletişim</a>
-    <a id="adminPanelBtn" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
+
+    <a id="adminLink" href="admin.html" class="admin-link">⚡ Admin Panel</a>
   </nav>
 
-  <main class="page chat-page">
-    <section class="chat-column">
-      <h2>Genel Sohbet</h2>
-      <div id="globalChat" class="chat-box"></div>
-      <input id="globalInput" class="chat-input" placeholder="Mesaj yaz..." />
-    </section>
+  <main class="main">
+    <section class="page-section">
+      <h2>Sohbet & Arkadaşlar</h2>
+      <p class="small-text">Discord tarzı: Solda arkadaşlar / istekler, ortada seçili DM.</p>
 
-    <section class="chat-column">
-      <h2>DM</h2>
-      <div class="dm-top">
-        <input id="userSearch" class="chat-input" placeholder="Kullanıcı ara..." />
-        <div id="userResults" class="list"></div>
-      </div>
+      <div class="dm-layout">
+        <!-- SOLDAN ARKADAŞ / ARAMA -->
+        <div class="dm-sidebar">
+          <div class="dm-section">
+            <div class="dm-section-title">Kullanıcı Ara / Arkadaş Ekle</div>
+            <input id="userSearchInput" placeholder="Kullanıcı adı ara..." style="width:100%;border-radius:8px;border:none;padding:6px;"/>
+            <button style="margin-top:6px;width:100%;" onclick="searchUsersForFriend()">Ara</button>
+            <div id="searchResultsBox" style="margin-top:6px;max-height:150px;overflow:auto;"></div>
+          </div>
 
-      <div class="dm-current">
-        <h3 id="dmWithLabel">Seçili: —</h3>
-        <div id="dmMessages" class="chat-box"></div>
-        <input id="dmInput" class="chat-input" placeholder="Özel mesaj..." />
+          <div class="dm-section">
+            <div class="dm-section-title">Arkadaş İstekleri</div>
+            <div id="friendRequestsBox"></div>
+          </div>
+
+          <div class="dm-section">
+            <div class="dm-section-title">Arkadaşlarım</div>
+            <div id="friendsBox"></div>
+          </div>
+        </div>
+
+        <!-- ORTA DM -->
+        <div class="dm-main">
+          <div class="dm-header">
+            <div>
+              <strong id="dmTargetName">Seçili kişi yok</strong><br>
+              <span id="dmTargetBadges" style="font-size:11px;color:#9ca3af;"></span>
+            </div>
+          </div>
+
+          <div id="chatMessages" class="chat-box"></div>
+
+          <div class="chat-input-row">
+            <input id="chatInput" placeholder="Mesaj yaz..." />
+            <button onclick="sendChat()">Gönder</button>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
   <script src="js/utils.js"></script>
   <script src="js/ui.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/chat.js"></script>
   <script src="js/dm.js"></script>
 </body>
 </html>
