@@ -149,33 +149,6 @@ body {
   margin: 0 auto;
 }
 
-.hero {
-  text-align: center;
-  padding: 60px 16px;
-}
-
-.hero h1 {
-  font-size: 40px;
-  margin-bottom: 12px;
-}
-
-.hero p {
-  opacity: 0.8;
-  margin-bottom: 24px;
-}
-
-.primary-btn {
-  padding: 10px 20px;
-  border-radius: 999px;
-  border: none;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: #000;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-/* SAYFA GENEL BÖLÜM */
-
 .page-section {
   margin-top: 24px;
 }
@@ -184,145 +157,7 @@ body {
   margin-bottom: 12px;
 }
 
-/* KARTLAR */
-
-.card {
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 12px;
-  padding: 16px;
-  margin-top: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.card-grid {
-  display: grid;
-  gap: 12px;
-}
-
-.card-list > .card {
-  margin-bottom: 10px;
-}
-
-.profile-card input {
-  width: 100%;
-  margin-bottom: 8px;
-  padding: 8px;
-  border-radius: 8px;
-  border: none;
-}
-
-/* AUTH */
-
-.auth-main {
-  max-width: 420px;
-}
-
-.auth-box {
-  margin-top: 24px;
-}
-
-.auth-section {
-  margin-top: 18px;
-}
-
-.auth-section input {
-  width: 100%;
-  padding: 9px;
-  margin-bottom: 6px;
-  border-radius: 8px;
-  border: none;
-}
-
-.auth-section button {
-  width: 100%;
-  padding: 9px;
-  border-radius: 999px;
-  border: none;
-  font-weight: 700;
-  cursor: pointer;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-}
-
-.small-text {
-  font-size: 13px;
-  opacity: 0.8;
-}
-
-/* ADMIN GRID */
-
-.admin-grid {
-  display: grid;
-  gap: 16px;
-}
-
-@media (min-width: 768px) {
-  .admin-grid {
-    grid-template-columns: 1.2fr 1fr 1fr;
-  }
-}
-
-/* CHAT */
-
-.chat-box {
-  max-height: 320px;
-  overflow-y: auto;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 8px;
-  background: rgba(0, 0, 0, 0.3);
-}
-
-.chat-message {
-  padding: 6px 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  font-size: 14px;
-}
-
-.chat-message small {
-  opacity: 0.6;
-}
-
-.chat-input-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.chat-input-row input {
-  flex: 1;
-  padding: 8px;
-  border-radius: 8px;
-  border: none;
-}
-
-/* SOSYAL BUTONLAR */
-
-.social-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.social-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-/* MOBILE */
-
-@media (max-width: 600px) {
-  .hero h1 {
-    font-size: 32px;
-  }
-}
-/* === ANA SAYFA HERO YENİ TASARIM === */
+/* ANA SAYFA HERO */
 
 .hero-home {
   min-height: calc(100vh - 80px);
@@ -334,7 +169,6 @@ body {
   overflow: hidden;
 }
 
-/* Arka plan: gradient + flu logo görünümlü */
 .hero-home::before {
   content: "";
   position: absolute;
@@ -389,8 +223,6 @@ body {
   opacity: 0.85;
 }
 
-/* Butonlar */
-
 .hero-buttons {
   display: inline-flex;
   flex-wrap: wrap;
@@ -429,7 +261,7 @@ body {
   background: rgba(15,23,42,0.9);
 }
 
-/* Alt taraftaki küçük “özellik kartları” */
+/* HERO ALT KARTLAR */
 
 .hero-stats {
   display: grid;
@@ -460,17 +292,218 @@ body {
   color: #e5e7eb;
 }
 
-/* Mobil uyum */
+/* KARTLAR */
 
-@media (max-width: 640px) {
-  .hero-home h1 {
-    font-size: 34px;
-  }
-  .hero-stats {
-    grid-template-columns: 1fr;
+.card {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.card-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.card-list > .card {
+  margin-bottom: 10px;
+}
+
+/* ÜRÜN KARTLARI */
+
+.product-grid {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-/* === GİRİŞ / ÜYELİK SAYFASI ANİMASYONLU ARKA PLAN === */
+
+@media (min-width: 900px) {
+  .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.product-card {
+  background: rgba(15,23,42,0.9);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(148,163,184,0.4);
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: #020617;
+}
+
+.product-body {
+  padding: 10px 12px 12px;
+}
+
+.product-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.product-price {
+  font-size: 14px;
+  color: #4ade80;
+  margin-bottom: 2px;
+}
+
+.product-stock {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.product-stock.out {
+  color: #f97373;
+}
+
+/* KULLANICI KARTLARI + PROFİL TEMA */
+
+.user-card {
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: rgba(15,23,42,0.9);
+  border: 1px solid rgba(148,163,184,0.4);
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+
+.user-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  border: 1px solid rgba(148,163,184,0.6);
+}
+
+.badge-admin {
+  border-color: #f97373;
+  color: #fecaca;
+  background: rgba(127,29,29,0.6);
+}
+
+.badge-mod {
+  border-color: #38bdf8;
+  color: #e0f2fe;
+  background: rgba(8,47,73,0.6);
+}
+
+.badge-verified {
+  border-color: #3b82f6;
+  color: #dbeafe;
+  background: rgba(30,64,175,0.7);
+}
+
+.badge-gold {
+  border-color: #eab308;
+  color: #fef3c7;
+  background: rgba(120,53,15,0.7);
+}
+
+/* PROFİL TEMA RENKLERİ */
+
+.theme-neon-green {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 14px rgba(34,197,94,0.6);
+}
+
+.theme-neon-blue {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 14px rgba(59,130,246,0.6);
+}
+
+.theme-crimson {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 14px rgba(248,113,113,0.7);
+}
+
+.theme-violet {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 0 14px rgba(139,92,246,0.7);
+}
+
+.theme-gold {
+  border-color: #eab308 !important;
+  box-shadow: 0 0 16px rgba(234,179,8,0.7);
+}
+
+.theme-cyan {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 16px rgba(6,182,212,0.7);
+}
+
+.theme-sunset {
+  border-image: linear-gradient(45deg,#f97316,#ec4899) 1;
+  box-shadow: 0 0 18px rgba(236,72,153,0.7);
+}
+
+.theme-gold-white {
+  border-image: linear-gradient(45deg,#eab308,#f9fafb) 1;
+  animation: glowGold 2s ease-in-out infinite alternate;
+}
+
+.theme-red-white {
+  border-image: linear-gradient(45deg,#ef4444,#f9fafb) 1;
+  animation: glowRed 2s ease-in-out infinite alternate;
+}
+
+.theme-blue-pink {
+  border-image: linear-gradient(45deg,#3b82f6,#ec4899) 1;
+  animation: glowBluePink 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes glowGold {
+  0% { box-shadow: 0 0 8px rgba(234,179,8,0.4); }
+  100% { box-shadow: 0 0 18px rgba(234,179,8,0.9); }
+}
+
+@keyframes glowRed {
+  0% { box-shadow: 0 0 8px rgba(248,113,113,0.4); }
+  100% { box-shadow: 0 0 18px rgba(248,113,113,0.9); }
+}
+
+@keyframes glowBluePink {
+  0% { box-shadow: 0 0 10px rgba(59,130,246,0.4); }
+  100% { box-shadow: 0 0 20px rgba(236,72,153,0.9); }
+}
+
+/* AUTH SAYFASI ANİMASYONLU ARKA PLAN */
 
 .page-auth {
   min-height: 100vh;
@@ -480,7 +513,6 @@ body {
   overflow: hidden;
 }
 
-/* Dönen ışıklı layer */
 .page-auth::before {
   content: "";
   position: fixed;
@@ -492,7 +524,6 @@ body {
   z-index: -2;
 }
 
-/* Arkada büyük soluk NF yazısı */
 .page-auth::after {
   content: "NF";
   position: fixed;
@@ -510,9 +541,223 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Giriş kutusunu cam / kart gibi göster */
 .page-auth .auth-box {
   background: rgba(15, 23, 42, 0.9);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.75);
   border: 1px solid rgba(148, 163, 184, 0.45);
+}
+
+.auth-main {
+  max-width: 420px;
+}
+
+.auth-box {
+  margin-top: 24px;
+}
+
+.auth-section {
+  margin-top: 18px;
+}
+
+.auth-section input {
+  width: 100%;
+  padding: 9px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  border: none;
+}
+
+.auth-section button {
+  width: 100%;
+  padding: 9px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.small-text {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* ADMIN GRID */
+
+.admin-grid {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .admin-grid {
+    grid-template-columns: 1.3fr 1fr 1fr;
+  }
+}
+
+/* CHAT & DM LAYOUT (Discord tarzı) */
+
+.dm-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 800px) {
+  .dm-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dm-sidebar {
+  background: rgba(15,23,42,0.95);
+  border-radius: 12px;
+  padding: 10px;
+  border: 1px solid rgba(148,163,184,0.5);
+}
+
+.dm-sidebar h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+.dm-section {
+  margin-top: 10px;
+}
+
+.dm-section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+  margin-bottom: 6px;
+}
+
+.dm-user-item {
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dm-user-item:hover,
+.dm-user-item.active {
+  background: rgba(30,64,175,0.8);
+}
+
+.dm-main {
+  background: rgba(15,23,42,0.95);
+  border-radius: 12px;
+  padding: 10px;
+  border: 1px solid rgba(148,163,184,0.5);
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+
+.dm-header {
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(148,163,184,0.4);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-box {
+  flex: 1;
+  max-height: 360px;
+  overflow-y: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.chat-message {
+  padding: 4px 4px 6px;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.chat-message .meta {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.chat-message.self {
+  text-align: right;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.chat-input-row input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+}
+
+/* SOSYAL BUTONLAR */
+
+.social-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* SETTINGS FORM */
+
+.settings-grid {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 800px) {
+  .settings-grid {
+    grid-template-columns: 1.1fr 1fr;
+  }
+}
+
+.settings-group input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 6px;
+}
+
+.settings-group button {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* MOBILE */
+
+@media (max-width: 640px) {
+  .hero-home h1 {
+    font-size: 34px;
+  }
 }
