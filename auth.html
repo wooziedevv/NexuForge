@@ -1,67 +1,197 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Giriş / Üyelik – NexuForge</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
+  <!-- KARARMA -->
   <div id="overlay"></div>
 
+  <!-- HEADER -->
   <header class="header">
-    <div class="logo" onclick="window.location='index.html'">
-      NEXUFORGE
-    </div>
-
+    <div class="logo" onclick="location.href='index.html'">NexuForge</div>
     <div class="header-right">
-      <div class="notif" onclick="window.location='notifications.html'">🔔<span id="notifCount" class="notif-count">0</span></div>
+      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
       <div id="menuToggle" class="edge-toggle">‹</div>
     </div>
   </header>
 
+  <!-- SAĞ MENÜ -->
   <nav id="sidebar" class="sidebar">
     <button id="closeSidebar" class="close-btn">✕</button>
+
     <a href="index.html">🏠 Ana Sayfa</a>
     <a href="products.html">🛒 Ürünler</a>
     <a href="scrims.html">🎮 Scrim / Event</a>
-    <a href="dm.html">💬 Mesajlar</a>
+    <a href="dm.html">💬 Sohbet / DM</a>
     <a href="profile.html">👤 Profilim</a>
     <a href="auth.html">🔐 Giriş / Üyelik</a>
     <a href="about.html">ℹ️ Hakkımızda</a>
     <a href="contact.html">📞 İletişim</a>
-    <a id="adminPanelBtn" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
+
+    <a id="adminLink" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
   </nav>
 
-  <main class="page">
+  <!-- İÇERİK -->
+  <main class="main auth-main">
     <section class="auth-box">
-      <h2>Giriş / Üyelik</h2>
+      <h2>Üyelik</h2>
 
-      <div class="auth-cols">
-        <div class="auth-section">
-          <h3>Kayıt Ol</h3>
-          <input id="reg_username" placeholder="Kullanıcı adı">
-          <input id="reg_email" placeholder="E-mail">
-          <input id="reg_password" type="password" placeholder="Şifre">
-          <button onclick="registerUser()">Kayıt Ol</button>
-        </div>
-
-        <div class="auth-section">
-          <h3>Giriş Yap</h3>
-          <input id="login_email" placeholder="E-mail">
-          <input id="login_password" type="password" placeholder="Şifre">
-          <button onclick="loginUser()">Giriş</button>
-          <button class="secondary" onclick="logoutUser()">Çıkış Yap</button>
-        </div>
+      <div class="auth-section">
+        <h3>Kayıt Ol</h3>
+        <input id="regUsername" placeholder="Kullanıcı adı" />
+        <input id="regEmail" type="email" placeholder="E-posta" />
+        <input id="regPassword" type="password" placeholder="Şifre" />
+        <button onclick="registerUser()">Kayıt Ol</button>
       </div>
 
-      <p class="auth-info" id="authStatus"></p>
+      <div class="auth-section">
+        <h3>Giriş Yap</h3>
+        <input id="loginEmail" type="email" placeholder="E-posta" />
+        <input id="loginPassword" type="password" placeholder="Şifre" />
+        <button onclick="loginUser()">Giriş Yap</button>
+        <p class="small-text" id="loginInfo"></p>
+      </div>
+
+      <p class="small-text" id="registerInfo"></p>
     </section>
   </main>
 
-  <script src="js/utils.js"></script>
+  <!-- JS: önce ui, sonra alttaki inline script -->
   <script src="js/ui.js"></script>
-  <script src="js/auth.js"></script>
+
+  <!-- 🔥 KAYIT + GİRİŞ MANTIĞI BURADA -->
+  <script>
+    // ========= LOCALSTORAGE HELPER =========
+    function safeParse(key, fallback) {
+      try {
+        const v = localStorage.getItem(key);
+        return v ? JSON.parse(v) : fallback;
+      } catch (e) {
+        return fallback;
+      }
+    }
+    function getUsers() {
+      return safeParse("users", []);
+    }
+    function saveUsers(arr) {
+      localStorage.setItem("users", JSON.stringify(arr));
+    }
+    function getCurrentUser() {
+      return safeParse("currentUser", null);
+    }
+    function saveCurrentUser(user) {
+      if (user) localStorage.setItem("currentUser", JSON.stringify(user));
+      else localStorage.removeItem("currentUser");
+    }
+
+    // Küfür filtresi
+    const bannedWords = ["amk","aq","piç","orospu","sikerim","göt","yarak","sürtük","pedofil","sapık","sapkın"];
+
+    // ========= KAYIT =========
+    function registerUser() {
+      const usernameEl = document.getElementById("regUsername");
+      const emailEl    = document.getElementById("regEmail");
+      const passEl     = document.getElementById("regPassword");
+      const infoEl     = document.getElementById("registerInfo");
+
+      const username = usernameEl.value.trim();
+      const email    = emailEl.value.trim().toLowerCase();
+      const password = passEl.value;
+
+      if (!username || !email || !password) {
+        infoEl.textContent = "Tüm alanları doldurun.";
+        infoEl.style.color = "#f87171";
+        return;
+      }
+
+      const low = username.toLowerCase();
+      if (bannedWords.some(w => low.includes(w))) {
+        infoEl.textContent = "Bu kullanıcı adı uygun değil.";
+        infoEl.style.color = "#f87171";
+        return;
+      }
+
+      let users = getUsers();
+      if (users.some(u => u.email === email)) {
+        infoEl.textContent = "Bu e-posta zaten kayıtlı.";
+        infoEl.style.color = "#f87171";
+        return;
+      }
+      if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+        infoEl.textContent = "Bu kullanıcı adı alınmış.";
+        infoEl.style.color = "#f87171";
+        return;
+      }
+
+      const newUser = {
+        uid: "u" + Date.now(),
+        username,
+        email,
+        password,
+        role: "user",
+        profile: {}
+      };
+
+      users.push(newUser);
+      saveUsers(users);
+      saveCurrentUser(newUser);
+
+      infoEl.textContent = "Kayıt başarılı! Oturum açtınız.";
+      infoEl.style.color = "#4ade80";
+
+      usernameEl.value = "";
+      emailEl.value = "";
+      passEl.value = "";
+    }
+
+    // ========= GİRİŞ =========
+    function loginUser() {
+      const emailEl = document.getElementById("loginEmail");
+      const passEl  = document.getElementById("loginPassword");
+      const infoEl  = document.getElementById("loginInfo");
+
+      const email    = emailEl.value.trim().toLowerCase();
+      const password = passEl.value;
+
+      if (!email || !password) {
+        infoEl.textContent = "E-posta ve şifre zorunlu.";
+        infoEl.style.color = "#f87171";
+        return;
+      }
+
+      const users = getUsers();
+      const user = users.find(u => u.email === email && u.password === password);
+
+      if (!user) {
+        infoEl.textContent = "E-posta veya şifre hatalı.";
+        infoEl.style.color = "#f87171";
+        return;
+      }
+
+      saveCurrentUser(user);
+      infoEl.textContent = "Giriş başarılı: " + user.username;
+      infoEl.style.color = "#4ade80";
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 800);
+    }
+
+    // ========= SAYFA AÇILDIĞINDA KİM GİRMİŞ GÖSTER =========
+    window.addEventListener("DOMContentLoaded", () => {
+      const infoEl = document.getElementById("loginInfo");
+      const cur = getCurrentUser();
+      if (infoEl && cur) {
+        infoEl.textContent = "Şu an giriş yapan: " + cur.username + " (" + cur.email + ")";
+        infoEl.style.color = "#e5e5e5";
+      }
+    });
+  </script>
+
 </body>
 </html>
