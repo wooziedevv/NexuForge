@@ -26,7 +26,7 @@ function saveCurrentUser(user) {
   if (!users.some(u => u.username === "Wooziedev111")) {
     users.push({
       uid: "admin-" + Date.now(),
-      username: "Wooziedev111",
+      username: "Wooziedev11",
       email: "admin@nexuforge.local",
       password: "ati1234.ati",
       role: "admin"
