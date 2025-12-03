@@ -21,13 +21,12 @@ if (overlay) overlay.addEventListener("click", closeSidebar);
 /* ADMIN GÖRÜNÜRLÜK */
 const curUser = getCurrentUser();
 if (adminLink) {
-  if (curUser && (curUser.role === "admin" || curUser.username === "Wooziedev111")) {
+  if (curUser && (curUser.role === "admin" || curUser.username === "Wooziedev11")) {
     adminLink.style.display = "block";
   } else {
     adminLink.style.display = "none";
   }
 }
-
 /* Basit sağ kenardan sürükleyerek açma (mobil) */
 
 let touchStartX = null;
