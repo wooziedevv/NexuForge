@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ayarlar – NexuForge</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div id="overlay"></div>
+
+  <header class="header">
+    <div class="logo" onclick="location.href='index.html'">NexuForge</div>
+    <div class="header-right">
+      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
+      <button class="icon-btn" onclick="location.href='dm.html'">👥</button>
+      <div id="menuToggle" class="edge-toggle">‹</div>
+    </div>
+  </header>
+
+  <nav id="sidebar" class="sidebar">
+    <button id="closeSidebar" class="close-btn">✕</button>
+
+    <a href="index.html" class="nav-guest-only">🏠 Ana Sayfa</a>
+    <a href="auth.html"  class="nav-guest-only">🔐 Giriş / Üyelik</a>
+
+    <a href="products.html">🛒 Ürünler</a>
+    <a href="scrims.html">🎮 Scrim / Event</a>
+    <a href="dm.html">💬 Sohbet / DM</a>
+    <a href="profile.html">👤 Profilim</a>
+    <a href="settings.html" class="nav-auth-only">⚙️ Ayarlar</a>
+    <a href="about.html">ℹ️ Hakkımızda</a>
+    <a href="contact.html">📞 İletişim</a>
+
+    <a id="adminLink" href="admin.html" class="admin-link">⚡ Admin Panel</a>
+  </nav>
+
+  <main class="main">
+    <section class="page-section">
+      <h2>Ayarlar</h2>
+      <p class="small-text" id="settingsInfo"></p>
+
+      <div class="settings-grid">
+        <div class="card settings-group">
+          <h3>Hesap Bilgileri</h3>
+          <p><strong>Kullanıcı adı:</strong> <span id="setUsername"></span></p>
+          <p><strong>E-posta:</strong> <span id="setEmail"></span></p>
+          <p><strong>Roller:</strong> <span id="setRoles"></span></p>
+
+          <h4>Şifre Değiştir</h4>
+          <input id="oldPwd" type="password" placeholder="Eski şifre" />
+          <input id="newPwd" type="password" placeholder="Yeni şifre" />
+          <input id="newPwd2" type="password" placeholder="Yeni şifre tekrar" />
+          <button onclick="changePassword()">Şifreyi Güncelle</button>
+        </div>
+
+        <div class="card settings-group">
+          <h3>Güvenlik & Çıkış</h3>
+          <h4>Güvenlik</h4>
+          <input id="phoneInput" placeholder="Telefon (sadece size görünür)" />
+          <label style="font-size:13px;display:block;margin:6px 0;">
+            <input id="notifEmail" type="checkbox" /> E-posta bildirimlerini aç
+          </label>
+          <label style="font-size:13px;display:block;margin:6px 0;">
+            <input id="notifSite" type="checkbox" /> Site içi bildirimleri aç
+          </label>
+          <label style="font-size:13px;display:block;margin:6px 0;">
+            <input id="notifSound" type="checkbox" /> Sesli bildirimleri aç
+          </label>
+          <button onclick="saveSecurity()">Kaydet</button>
+
+          <hr>
+
+          <h4>Çıkış</h4>
+          <button style="background:#ef4444;color:#fff;" onclick="logoutConfirm()">Çıkış Yap</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/utils.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>
