@@ -1,39 +1,46 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ürünler – NexuForge</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+
   <div id="overlay"></div>
 
   <header class="header">
-    <div class="logo" onclick="window.location='index.html'">NEXUFORGE</div>
+    <div class="logo" onclick="location.href='index.html'">NexuForge</div>
     <div class="header-right">
-      <div class="notif" onclick="window.location='notifications.html'">🔔<span id="notifCount" class="notif-count">0</span></div>
+      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
+      <button class="icon-btn" onclick="location.href='dm.html'">👥</button>
       <div id="menuToggle" class="edge-toggle">‹</div>
     </div>
   </header>
 
   <nav id="sidebar" class="sidebar">
     <button id="closeSidebar" class="close-btn">✕</button>
-    <a href="index.html">🏠 Ana Sayfa</a>
+
+    <a href="index.html" class="nav-guest-only">🏠 Ana Sayfa</a>
+    <a href="auth.html"  class="nav-guest-only">🔐 Giriş / Üyelik</a>
+
     <a href="products.html">🛒 Ürünler</a>
     <a href="scrims.html">🎮 Scrim / Event</a>
-    <a href="dm.html">💬 Mesajlar</a>
+    <a href="dm.html">💬 Sohbet / DM</a>
     <a href="profile.html">👤 Profilim</a>
-    <a href="auth.html">🔐 Giriş / Üyelik</a>
+    <a href="settings.html" class="nav-auth-only">⚙️ Ayarlar</a>
     <a href="about.html">ℹ️ Hakkımızda</a>
     <a href="contact.html">📞 İletişim</a>
-    <a id="adminPanelBtn" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
+
+    <a id="adminLink" href="admin.html" class="admin-link">⚡ Admin Panel</a>
   </nav>
 
-  <main class="page">
-    <h2>Ürünler</h2>
-    <div id="productList" class="card-grid"></div>
-    <p class="muted">Ürün ekleme / düzenleme işlemleri admin panelden yapılır.</p>
+  <main class="main">
+    <section class="page-section">
+      <h2>Ürünler</h2>
+      <div id="productList" class="product-grid"></div>
+    </section>
   </main>
 
   <script src="js/utils.js"></script>
