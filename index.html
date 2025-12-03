@@ -1,68 +1,85 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NexuForge</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <!-- Ekran kararma -->
+  <!-- KARARTMA -->
   <div id="overlay"></div>
 
-  <!-- ÜST BAR -->
+  <!-- HEADER -->
   <header class="header">
-    <div class="logo" onclick="window.location='index.html'">
-      NEXUFORGE
-    </div>
+    <div class="logo" onclick="location.href='index.html'">NEXUFORGE</div>
 
     <div class="header-right">
-      <div class="notif" onclick="window.location='notifications.html'">
-        🔔
-        <span id="notifCount" class="notif-count">0</span>
-      </div>
-
-      <!-- SAĞ KENARDA YARIM YUVARLAK OK -->
-      <div id="menuToggle" class="edge-toggle">
-        ‹
-      </div>
+      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
+      <div id="menuToggle" class="edge-toggle">‹</div>
     </div>
   </header>
 
-  <!-- SAĞDAN MENÜ -->
+  <!-- SAĞ MENÜ -->
   <nav id="sidebar" class="sidebar">
     <button id="closeSidebar" class="close-btn">✕</button>
 
     <a href="index.html">🏠 Ana Sayfa</a>
     <a href="products.html">🛒 Ürünler</a>
     <a href="scrims.html">🎮 Scrim / Event</a>
-    <a href="dm.html">💬 Mesajlar</a>
+    <a href="dm.html">💬 Sohbet / DM</a>
     <a href="profile.html">👤 Profilim</a>
     <a href="auth.html">🔐 Giriş / Üyelik</a>
     <a href="about.html">ℹ️ Hakkımızda</a>
     <a href="contact.html">📞 İletişim</a>
 
-    <!-- Sadece admin kullanıcıda gösterilecek -->
-    <a id="adminPanelBtn" href="admin.html" class="admin-link" style="display:none;">
-      ⚡ Admin Panel
-    </a>
+    <a id="adminLink" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
   </nav>
 
-  <!-- ANA HERO -->
-  <main class="hero">
-    <div class="hero-inner">
-      <h1>NexuForge</h1>
-      <p>Gaming • E-Spor • Topluluk • Yazılım</p>
-      <div class="hero-buttons">
-        <button onclick="window.location='auth.html'">Giriş / Üyelik</button>
-        <button onclick="window.location='scrims.html'">Scrim & Eventler</button>
+  <!-- ANA İÇERİK -->
+  <main class="main">
+
+    <!-- HERO -->
+    <section class="hero hero-home">
+      <div class="hero-inner">
+        <div class="hero-pill">Gaming • E-Spor • Topluluk • Yazılım</div>
+
+        <h1>NexuForge</h1>
+        <p class="hero-sub">
+          Oyuncular, takımlar ve geliştiriciler için tek bir merkez.<br/>
+          Turnuvalar, scrim’ler, topluluk sohbeti ve daha fazlası.
+        </p>
+
+        <div class="hero-buttons">
+          <button class="btn btn-primary" onclick="location.href='auth.html'">
+            Giriş / Üyelik
+          </button>
+          <button class="btn btn-ghost" onclick="location.href='scrims.html'">
+            Scrim &amp; Eventler
+          </button>
+        </div>
+
+        <div class="hero-stats">
+          <div class="hero-stat-item">
+            <span class="stat-label">Topluluk</span>
+            <span class="stat-value">Yeni nesil oyuncular</span>
+          </div>
+          <div class="hero-stat-item">
+            <span class="stat-label">Scrim &amp; Ligler</span>
+            <span class="stat-value">Planlı organizasyonlar</span>
+          </div>
+          <div class="hero-stat-item">
+            <span class="stat-label">Sohbet &amp; DM</span>
+            <span class="stat-value">Arkadaş ekle, yazış</span>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
+
   </main>
 
   <script src="js/utils.js"></script>
   <script src="js/ui.js"></script>
-  <script src="js/chat.js"></script>
 </body>
 </html>
