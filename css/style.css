@@ -470,3 +470,49 @@ body {
     grid-template-columns: 1fr;
   }
 }
+/* === GİRİŞ / ÜYELİK SAYFASI ANİMASYONLU ARKA PLAN === */
+
+.page-auth {
+  min-height: 100vh;
+  background: radial-gradient(circle at 0% 0%, #1e293b 0, #020617 45%, #000 100%);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dönen ışıklı layer */
+.page-auth::before {
+  content: "";
+  position: fixed;
+  inset: -40px;
+  background: conic-gradient(from 180deg, #22c55e, #3b82f6, #a855f7, #22c55e);
+  opacity: 0.18;
+  mix-blend-mode: screen;
+  animation: spinGlow 22s linear infinite;
+  z-index: -2;
+}
+
+/* Arkada büyük soluk NF yazısı */
+.page-auth::after {
+  content: "NF";
+  position: fixed;
+  font-size: 220px;
+  font-weight: 900;
+  color: rgba(15, 23, 42, 0.55);
+  right: -40px;
+  bottom: -80px;
+  letter-spacing: 0.15em;
+  z-index: -1;
+}
+
+@keyframes spinGlow {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Giriş kutusunu cam / kart gibi göster */
+.page-auth .auth-box {
+  background: rgba(15, 23, 42, 0.9);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+}
