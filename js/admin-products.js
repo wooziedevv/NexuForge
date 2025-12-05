@@ -23,9 +23,18 @@
       (currentUser.role || "user");
   }
 
-  // Basit yetki kontrolü (şimdilik sadece admin / mod)
+  // YETKİ KONTROLÜ: username + role
   function canManageProducts() {
     if (!currentUser) return false;
+
+    // Ana hesap: Wooziedev11 → her zaman tam yetkili
+    if (
+      currentUser.username &&
+      currentUser.username.toLowerCase() === "wooziedev11"
+    ) {
+      return true;
+    }
+
     const role = currentUser.role || "user";
     return role === "admin" || role === "mod";
   }
@@ -36,7 +45,10 @@
       infoEl.textContent =
         "Bu sayfayı sadece admin / mod hesapları kullanabilir.";
     }
-    if (form) form.querySelector("button[type='submit']").disabled = true;
+    if (form) {
+      const btn = form.querySelector("button[type='submit']");
+      if (btn) btn.disabled = true;
+    }
   }
 
   // ÜRÜN EKLEME
@@ -56,13 +68,17 @@
       const imageUrl = document.getElementById("prodImage").value.trim();
 
       if (!name || isNaN(price) || isNaN(stock)) {
-        infoEl.style.color = "#f87171";
-        infoEl.textContent = "İsim, fiyat ve stok zorunlu.";
+        if (infoEl) {
+          infoEl.style.color = "#f87171";
+          infoEl.textContent = "İsim, fiyat ve stok zorunlu.";
+        }
         return;
       }
 
-      infoEl.style.color = "#e5e5e5";
-      infoEl.textContent = "Kaydediliyor...";
+      if (infoEl) {
+        infoEl.style.color = "#e5e5e5";
+        infoEl.textContent = "Kaydediliyor...";
+      }
 
       try {
         await db.collection("products").add({
@@ -74,15 +90,19 @@
           createdBy: currentUser ? currentUser.uid : null
         });
 
-        infoEl.style.color = "#4ade80";
-        infoEl.textContent = "Ürün eklendi.";
+        if (infoEl) {
+          infoEl.style.color = "#4ade80";
+          infoEl.textContent = "Ürün eklendi.";
+        }
 
         form.reset();
       } catch (err) {
         console.error("Ürün eklerken hata:", err);
-        infoEl.style.color = "#f87171";
-        infoEl.textContent =
-          "Ürün eklenirken hata: " + (err.message || "bilinmeyen");
+        if (infoEl) {
+          infoEl.style.color = "#f87171";
+          infoEl.textContent =
+            "Ürün eklenirken hata: " + (err.message || "bilinmeyen");
+        }
       }
     });
   }
