@@ -234,7 +234,7 @@ if (typeof firebase !== "undefined") {
         const usernameLower = (data.username || "")
           .toString()
           .toLowerCase();
-        if (!data.role && usernameLower === "wooziedev11") {
+        if (!data.role && usernameLower === "Wooziedev") {
           data.role = "admin";
           await docRef.update({ role: "admin" });
         }
