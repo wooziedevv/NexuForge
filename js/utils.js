@@ -110,3 +110,33 @@ function saveNotificationsStore(arr) {
 
   saveUsers(users);
 })();
+// js/utils.js
+
+// Basit local yardımcı fonksiyonlar (profil vs. için)
+function getUsers() {
+  try {
+    return JSON.parse(localStorage.getItem("users")) || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveUsers(users) {
+  localStorage.setItem("users", JSON.stringify(users));
+}
+
+function getCurrentUser() {
+  try {
+    return JSON.parse(localStorage.getItem("currentUser")) || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function saveCurrentUser(user) {
+  if (!user) {
+    localStorage.removeItem("currentUser");
+  } else {
+    localStorage.setItem("currentUser", JSON.stringify(user));
+  }
+}
