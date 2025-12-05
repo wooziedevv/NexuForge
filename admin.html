@@ -6,15 +6,14 @@
   <title>Admin Panel – NexuForge</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
+<body class="page-admin">
 
   <div id="overlay"></div>
 
   <header class="header">
-    <div class="logo" onclick="location.href='index.html'">NexuForge</div>
+    <div class="logo" onclick="location.href='index.html'">NEXUFORGE</div>
     <div class="header-right">
       <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
-      <button class="icon-btn" onclick="location.href='dm.html'">👥</button>
       <div id="menuToggle" class="edge-toggle">‹</div>
     </div>
   </header>
@@ -22,74 +21,68 @@
   <nav id="sidebar" class="sidebar">
     <button id="closeSidebar" class="close-btn">✕</button>
 
-    <a href="index.html" class="nav-guest-only">🏠 Ana Sayfa</a>
-    <a href="auth.html"  class="nav-guest-only">🔐 Giriş / Üyelik</a>
-
+    <a href="index.html">🏠 Ana Sayfa</a>
     <a href="products.html">🛒 Ürünler</a>
     <a href="scrims.html">🎮 Scrim / Event</a>
     <a href="dm.html">💬 Sohbet / DM</a>
     <a href="profile.html">👤 Profilim</a>
-    <a href="settings.html" class="nav-auth-only">⚙️ Ayarlar</a>
+    <a href="auth.html">🔐 Giriş / Üyelik</a>
     <a href="about.html">ℹ️ Hakkımızda</a>
     <a href="contact.html">📞 İletişim</a>
 
     <a id="adminLink" href="admin.html" class="admin-link">⚡ Admin Panel</a>
   </nav>
 
-  <main class="main">
-    <section class="page-section">
-      <h2>Admin Panel</h2>
-      <p class="small-text" id="adminStatus"></p>
+  <main class="main admin-main">
+    <section class="page-header">
+      <h1>Admin Panel</h1>
+      <p>Sadece admin/mod hesapları bu sayfayı kullanabilmeli. Şimdilik ürün yönetimi hazır.</p>
+      <p id="adminUserInfo" class="small-text"></p>
+    </section>
 
-      <div class="admin-grid">
-        <!-- Kullanıcılar -->
-        <div class="card">
-          <h3>Kullanıcılar & Roller</h3>
-          <div id="userList"></div>
+    <!-- ÜRÜN YÖNETİMİ -->
+    <section class="admin-section">
+      <h2>Ürünler</h2>
+
+      <form id="productForm" class="admin-form">
+        <div class="form-row">
+          <label>Ürün Adı</label>
+          <input id="prodName" required />
         </div>
-
-        <!-- Ürünler -->
-        <div class="card">
-          <h3>Ürün Yönetimi</h3>
-          <div>
-            <input id="prodName" placeholder="Ürün adı" />
-            <input id="prodPrice" type="number" placeholder="Fiyat (TL)" />
-            <input id="prodStock" type="number" placeholder="Stok (adet)" />
-            <input id="prodImage" placeholder="Görsel URL" />
-            <button onclick="adminAddProduct()">Ürün Ekle</button>
-          </div>
-          <hr>
-          <div id="adminProductList"></div>
+        <div class="form-row">
+          <label>Fiyat (TL)</label>
+          <input id="prodPrice" type="number" min="0" step="0.01" required />
         </div>
-
-        <!-- Scrim & Bildirim -->
-        <div class="card">
-          <h3>Scrim & Bildirim</h3>
-          <div>
-            <h4>Scrim / Event Ekle</h4>
-            <input id="eventName" placeholder="Etkinlik adı" />
-            <input id="eventDate" placeholder="Tarih / saat" />
-            <button onclick="adminAddScrim()">Etkinlik Ekle</button>
-          </div>
-
-          <hr>
-
-          <div>
-            <h4>Bildirim Gönder</h4>
-            <p class="small-text">
-              /m everyone mesaj → tüm kullanıcılara<br>
-              /m KullanıcıAdı mesaj → sadece o kişiye
-            </p>
-            <textarea id="notifCommand" rows="3" style="width:100%;border-radius:8px;border:none;"></textarea>
-            <button onclick="adminSendNotification()">Gönder</button>
-          </div>
+        <div class="form-row">
+          <label>Stok (adet)</label>
+          <input id="prodStock" type="number" min="0" step="1" required />
         </div>
+        <div class="form-row">
+          <label>Görsel URL</label>
+          <input id="prodImage" placeholder="https://..." />
+        </div>
+        <button type="submit" class="btn btn-primary">Ürün Ekle</button>
+        <p id="productFormInfo" class="small-text"></p>
+      </form>
+
+      <div id="adminProductsList" class="admin-products-list">
+        <!-- Ürünler JS ile gelecek -->
       </div>
     </section>
   </main>
 
-  <script src="js/utils.js"></script>
+  <!-- JS -->
   <script src="js/ui.js"></script>
-  <script src="js/admin.js"></script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <!-- Proje JS -->
+  <script src="js/firebase-init.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/db-init.js"></script>
+  <script src="js/admin-products.js"></script>
 </body>
 </html>
