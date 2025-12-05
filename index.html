@@ -4,26 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NexuForge</title>
+
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
+<body class="page-index">
 
-  <!-- KARARTMA -->
+  <!-- KARARMA OVERLAY (MENÜ İÇİN) -->
   <div id="overlay"></div>
 
-  <!-- HEADER -->
+  <!-- ÜST BAR -->
   <header class="header">
-    <div class="logo" onclick="location.href='index.html'">NEXUFORGE</div>
+    <div class="logo" onclick="location.href='index.html'">
+      NEXUFORGE
+      <span>Gaming • E-Spor • Topluluk</span>
+    </div>
 
     <div class="header-right">
-      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
-      <div id="menuToggle" class="edge-toggle">‹</div>
+      <button class="icon-btn" onclick="location.href='notifications.html'">
+        🔔 <span id="notifCount">0</span>
+      </button>
     </div>
   </header>
 
-  <!-- SAĞ MENÜ -->
+  <!-- SAĞ KENARDAKİ OK (MENÜ AÇ) -->
+  <div id="menuToggle" class="edge-toggle">‹</div>
+
+  <!-- SAĞDAN AÇILAN MENÜ -->
   <nav id="sidebar" class="sidebar">
     <button id="closeSidebar" class="close-btn">✕</button>
+    <h3>Menü</h3>
 
     <a href="index.html">🏠 Ana Sayfa</a>
     <a href="products.html">🛒 Ürünler</a>
@@ -33,53 +42,32 @@
     <a href="auth.html">🔐 Giriş / Üyelik</a>
     <a href="about.html">ℹ️ Hakkımızda</a>
     <a href="contact.html">📞 İletişim</a>
+    <a href="settings.html">⚙️ Ayarlar</a>
+    <a href="notifications.html">📨 Bildirimler</a>
 
-    <a id="adminLink" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
+    <!-- Admin sadece belirli kullanıcıda görünecek (JS ile açılacak) -->
+    <a id="adminLink" href="admin.html" class="admin-link" style="display:none;">
+      ⚡ Admin Panel
+    </a>
   </nav>
 
   <!-- ANA İÇERİK -->
   <main class="main">
+    <section class="hero">
+      <div class="hero-title">NEXUFORGE</div>
+      <p class="hero-subtitle">
+        E-spor, yazılım ve topluluğu tek çatı altında toplayan platform.
+      </p>
 
-    <!-- HERO -->
-    <section class="hero hero-home">
-      <div class="hero-inner">
-        <div class="hero-pill">Gaming • E-Spor • Topluluk • Yazılım</div>
-
-        <h1>NexuForge</h1>
-        <p class="hero-sub">
-          Oyuncular, takımlar ve geliştiriciler için tek bir merkez.<br/>
-          Turnuvalar, scrim’ler, topluluk sohbeti ve daha fazlası.
-        </p>
-
-        <div class="hero-buttons">
-          <button class="btn btn-primary" onclick="location.href='auth.html'">
-            Giriş / Üyelik
-          </button>
-          <button class="btn btn-ghost" onclick="location.href='scrims.html'">
-            Scrim &amp; Eventler
-          </button>
-        </div>
-
-        <div class="hero-stats">
-          <div class="hero-stat-item">
-            <span class="stat-label">Topluluk</span>
-            <span class="stat-value">Yeni nesil oyuncular</span>
-          </div>
-          <div class="hero-stat-item">
-            <span class="stat-label">Scrim &amp; Ligler</span>
-            <span class="stat-value">Planlı organizasyonlar</span>
-          </div>
-          <div class="hero-stat-item">
-            <span class="stat-label">Sohbet &amp; DM</span>
-            <span class="stat-value">Arkadaş ekle, yazış</span>
-          </div>
-        </div>
+      <div class="hero-pill-row">
+        <div class="hero-pill">🎮 B2G/DEV E-Sports</div>
+        <div class="hero-pill">💻 Yazılım & Projeler</div>
+        <div class="hero-pill">💬 Topluluk & Sohbet</div>
       </div>
     </section>
-
   </main>
 
-  <script src="js/utils.js"></script>
+  <!-- JS -->
   <script src="js/ui.js"></script>
 </body>
 </html>
