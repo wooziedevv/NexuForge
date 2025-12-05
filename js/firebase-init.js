@@ -4,6 +4,6 @@ const firebaseConfig = {
   projectId: "nexuforge",
   storageBucket: "nexuforge.firebasestorage.app",
   messagingSenderId: "10942528260",
-  appId: "1:10942528260:web:4ab8d2c39e14885729ae51",
-  measurementId: "G-ZD5J8M825M"
+  appId: "1:10942528260:web:a13a10b155e51ad229ae51",
+  measurementId: "G-J7X26TD7GZ"
 };
