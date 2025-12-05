@@ -1,4 +1,7 @@
 // js/utils.js
+// LocalStorage yardımcıları (currentUser, DM, bildirim vs.)
+
+/* ========== Genel helper ========== */
 
 function safeParse(key, fallback) {
   try {
@@ -9,32 +12,39 @@ function safeParse(key, fallback) {
   }
 }
 
-/* KULLANICILAR */
+/* ========== Kullanıcı cache (local) ========== */
+/* NOT: Asıl kullanıcılar Firebase Auth + Firestore'da.
+   Buradaki "users" daha çok eski DM / ayar sistemine yönelik local cache.
+   Şu an core işimiz için sadece currentUser önemli. */
 
 function getUsers() {
   return safeParse("users", []);
 }
 
-function saveUsers(users) {
-  localStorage.setItem("users", JSON.stringify(users));
+function saveUsers(arr) {
+  localStorage.setItem("users", JSON.stringify(arr || []));
 }
+
+/* currentUser:
+   auth-firebase.js, Firebase'den gelen kullanıcıyı buraya yazar.
+*/
 
 function getCurrentUser() {
   return safeParse("currentUser", null);
 }
 
 function saveCurrentUser(user) {
-  if (user) localStorage.setItem("currentUser", JSON.stringify(user));
-  else localStorage.removeItem("currentUser");
+  if (user) {
+    localStorage.setItem("currentUser", JSON.stringify(user));
+  } else {
+    localStorage.removeItem("currentUser");
+  }
 }
 
-function findUserByUsername(username) {
-  const users = getUsers();
-  return users.find(u => u.username.toLowerCase() === username.toLowerCase()) || null;
-}
+/* İsteğe bağlı: local user listesini normalize et (alanlar eksikse doldur) */
 
 function normalizeUsers() {
-  const users = getUsers().map(u => {
+  const users = getUsers().map((u) => {
     if (!u.role) u.role = "user";
     if (!u.profile) u.profile = {};
     if (!u.friends) u.friends = [];
@@ -42,101 +52,34 @@ function normalizeUsers() {
     if (!u.badges) u.badges = [];
     return u;
   });
+
   saveUsers(users);
 
+  // currentUser da bu listeden güncellensin
   const cur = getCurrentUser();
   if (cur) {
-    const fresh = users.find(u => u.uid === cur.uid);
+    const fresh = users.find((u) => u.uid === cur.uid);
     if (fresh) saveCurrentUser(fresh);
   }
 }
 
-/* DM / MESAJLAR */
-
-function dmKey(uid1, uid2) {
-  return uid1 < uid2 ? uid1 + "_" + uid2 : uid2 + "_" + uid1;
-}
+/* ========== DM local store (ileride Firestore'a taşınabilir) ========== */
 
 function getDms() {
   return safeParse("dms", {}); // { dmKey: [ {fromUid,toUid,text,time} ] }
 }
 
 function saveDms(dms) {
-  localStorage.setItem("dms", JSON.stringify(dms));
+  localStorage.setItem("dms", JSON.stringify(dms || {}));
 }
 
-/* BİLDİRİMLER */
+/* ========== Bildirim store (local) ========== */
+/* Şu an için admin panelden / js'den üretilebilir; ileride Firestore'a da taşıyabiliriz. */
 
 function getNotificationsStore() {
   return safeParse("notifications", []); // {id,to,from,title,text,time}
 }
 
 function saveNotificationsStore(arr) {
-  localStorage.setItem("notifications", JSON.stringify(arr));
-}
-
-/* ADMIN SEED – Wooziedev11 */
-
-(function seedAdmin() {
-  normalizeUsers();
-  let users = getUsers();
-
-  let adminUser = users.find(
-    u =>
-      u.email === "admin@nexuforge.local" ||
-      u.username === "Wooziedev111" ||
-      u.username === "Wooziedev11"
-  );
-
-  if (adminUser) {
-    adminUser.username = "Wooziedev11";
-    adminUser.email = "admin@nexuforge.local";
-    adminUser.password = "ati1234.ati";
-    adminUser.role = "admin";
-  } else {
-    adminUser = {
-      uid: "admin-1",
-      username: "Wooziedev11",
-      email: "admin@nexuforge.local",
-      password: "ati1234.ati",
-      role: "admin",
-      profile: {},
-      friends: [],
-      friendRequests: [],
-      badges: ["verified-gold"]
-    };
-    users.push(adminUser);
-  }
-
-  saveUsers(users);
-})();
-// js/utils.js
-
-// Basit local yardımcı fonksiyonlar (profil vs. için)
-function getUsers() {
-  try {
-    return JSON.parse(localStorage.getItem("users")) || [];
-  } catch (e) {
-    return [];
-  }
-}
-
-function saveUsers(users) {
-  localStorage.setItem("users", JSON.stringify(users));
-}
-
-function getCurrentUser() {
-  try {
-    return JSON.parse(localStorage.getItem("currentUser")) || null;
-  } catch (e) {
-    return null;
-  }
-}
-
-function saveCurrentUser(user) {
-  if (!user) {
-    localStorage.removeItem("currentUser");
-  } else {
-    localStorage.setItem("currentUser", JSON.stringify(user));
-  }
+  localStorage.setItem("notifications", JSON.stringify(arr || []));
 }
