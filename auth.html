@@ -47,6 +47,7 @@
         <input id="regEmail" type="email" placeholder="E-posta" />
         <input id="regPassword" type="password" placeholder="Şifre" />
         <button onclick="registerUser()">Kayıt Ol</button>
+        <p class="small-text" id="registerInfo"></p>
       </div>
 
       <div class="auth-section">
@@ -56,149 +57,19 @@
         <button onclick="loginUser()">Giriş Yap</button>
         <p class="small-text" id="loginInfo"></p>
       </div>
-
-      <p class="small-text" id="registerInfo"></p>
     </section>
   </main>
 
-  <!-- JS: önce ui, sonra alttaki inline script -->
+  <!-- SCRIPTLER -->
   <script src="js/ui.js"></script>
 
-  <!-- 🔥 KAYIT + GİRİŞ MANTIĞI BURADA -->
-  <script>
-    // ========= LOCALSTORAGE HELPER =========
-    function safeParse(key, fallback) {
-      try {
-        const v = localStorage.getItem(key);
-        return v ? JSON.parse(v) : fallback;
-      } catch (e) {
-        return fallback;
-      }
-    }
-    function getUsers() {
-      return safeParse("users", []);
-    }
-    function saveUsers(arr) {
-      localStorage.setItem("users", JSON.stringify(arr));
-    }
-    function getCurrentUser() {
-      return safeParse("currentUser", null);
-    }
-    function saveCurrentUser(user) {
-      if (user) localStorage.setItem("currentUser", JSON.stringify(user));
-      else localStorage.removeItem("currentUser");
-    }
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
-    // Küfür filtresi
-    const bannedWords = ["amk","aq","piç","orospu","sikerim","göt","yarak","sürtük","pedofil","sapık","sapkın"];
-
-    // ========= KAYIT =========
-    function registerUser() {
-      const usernameEl = document.getElementById("regUsername");
-      const emailEl    = document.getElementById("regEmail");
-      const passEl     = document.getElementById("regPassword");
-      const infoEl     = document.getElementById("registerInfo");
-
-      const username = usernameEl.value.trim();
-      const email    = emailEl.value.trim().toLowerCase();
-      const password = passEl.value;
-
-      if (!username || !email || !password) {
-        infoEl.textContent = "Tüm alanları doldurun.";
-        infoEl.style.color = "#f87171";
-        return;
-      }
-
-      const low = username.toLowerCase();
-      if (bannedWords.some(w => low.includes(w))) {
-        infoEl.textContent = "Bu kullanıcı adı uygun değil.";
-        infoEl.style.color = "#f87171";
-        return;
-      }
-
-      let users = getUsers();
-      if (users.some(u => u.email === email)) {
-        infoEl.textContent = "Bu e-posta zaten kayıtlı.";
-        infoEl.style.color = "#f87171";
-        return;
-      }
-      if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-        infoEl.textContent = "Bu kullanıcı adı alınmış.";
-        infoEl.style.color = "#f87171";
-        return;
-      }
-
-      const newUser = {
-        uid: "u" + Date.now(),
-        username,
-        email,
-        password,
-        role: "user",
-        profile: {}
-      };
-
-      users.push(newUser);
-      saveUsers(users);
-      saveCurrentUser(newUser);
-
-      infoEl.textContent = "Kayıt başarılı! Oturum açtınız.";
-      infoEl.style.color = "#4ade80";
-
-      usernameEl.value = "";
-      emailEl.value = "";
-      passEl.value = "";
-    }
-
-    // ========= GİRİŞ =========
-    function loginUser() {
-      const emailEl = document.getElementById("loginEmail");
-      const passEl  = document.getElementById("loginPassword");
-      const infoEl  = document.getElementById("loginInfo");
-
-      const email    = emailEl.value.trim().toLowerCase();
-      const password = passEl.value;
-
-      if (!email || !password) {
-        infoEl.textContent = "E-posta ve şifre zorunlu.";
-        infoEl.style.color = "#f87171";
-        return;
-      }
-
-      const users = getUsers();
-      const user = users.find(u => u.email === email && u.password === password);
-
-      if (!user) {
-        infoEl.textContent = "E-posta veya şifre hatalı.";
-        infoEl.style.color = "#f87171";
-        return;
-      }
-
-      saveCurrentUser(user);
-      infoEl.textContent = "Giriş başarılı: " + user.username;
-      infoEl.style.color = "#4ade80";
-
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 800);
-    }
-
-    // ========= SAYFA AÇILDIĞINDA KİM GİRMİŞ GÖSTER =========
-    window.addEventListener("DOMContentLoaded", () => {
-      const infoEl = document.getElementById("loginInfo");
-      const cur = getCurrentUser();
-      if (infoEl && cur) {
-        infoEl.textContent = "Şu an giriş yapan: " + cur.username + " (" + cur.email + ")";
-        infoEl.style.color = "#e5e5e5";
-      }
-    });
-  </script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-
-<script src="js/firebase-init.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/auth-firebase.js"></script>
-  
+  <!-- Senin JS dosyaların -->
+  <script src="js/firebase-init.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth-firebase.js"></script>
 </body>
 </html>
