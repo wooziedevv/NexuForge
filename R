@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Kullanıcılar
+    match /users/{userId} {
+      // Tüm giriş yapmış kullanıcılar kullanıcı listesine bakabilir
+      allow read: if request.auth != null;
+
+      // Kendi user dokümanını yaratabilir (ilk kayıt)
+      allow create: if request.auth != null && request.auth.uid == userId;
+
+      // Rolleri değiştirmek gibi işler sadece admin'de
+      allow update, delete: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    // Ürünler
+    match /products/{productId} {
+      // Ürünler herkes tarafından görülebilir
+      allow read: if true;
+
+      // Sadece admin ve mod ürün ekleyip silebilir / güncelleyebilir
+      allow create, update, delete: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ["admin", "mod"];
+    }
+
+    // Diğer her şey kapalı
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
