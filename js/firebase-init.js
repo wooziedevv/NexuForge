@@ -1,5 +1,5 @@
 const firebaseConfig = {
-  apiKey: "AIzaSyAOQWzJJmaynRXCrQ9PFwygoiND1FGpv6E",
+  apiKey: "AIzaSyAOQWzJJmaynRXCr0Q9Fwyg0iND1FGpv6E",
   authDomain: "nexuforge.firebaseapp.com",
   projectId: "nexuforge",
   storageBucket: "nexuforge.firebasestorage.app",
