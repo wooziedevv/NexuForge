@@ -1,6 +1,6 @@
 // js/firebase-init.js
 
-// Firebase projenin ayarları
+// 🔹 Firebase config – SENİN ekranından aldığım değerlerle
 const firebaseConfig = {
   apiKey: "AIzaSyAOQWzJJmaynRXCrQ9PFwygoiND1FGpv6E",
   authDomain: "nexuforge.firebaseapp.com",
@@ -11,5 +11,4 @@ const firebaseConfig = {
   measurementId: "G-ZD5J8M825M"
 };
 
-// initializeApp kısmını auth-firebase.js içinde yapıyoruz,
-// bu dosyada ekstra bir şey yazmana gerek yok.
+// initializeApp burada değil, auth-firebase.js içinde çağırıyorum
