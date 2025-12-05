@@ -1,12 +1,18 @@
 // js/auth-firebase.js
 
-// Global auth değişkeni (var = TDZ hatası yok)
+// Global auth
 var auth = null;
 
-// Firebase başlat + auth hazırla
+// Küfür filtresi (burada da dursun, kayıt kontrolü için)
+var bannedWords = [
+  "amk","aq","piç","orospu","sikerim","göt","yarak",
+  "sürtük","pedofil","sapık","sapkın"
+];
+
+// Firebase + Auth + Firestore başlat
 (function initFirebaseAuth() {
   if (typeof firebase === "undefined") {
-    console.error("Firebase global bulunamadı");
+    console.error("Firebase global yok (auth-firebase).");
     return;
   }
 
@@ -16,79 +22,43 @@ var auth = null;
     }
   } catch (e) {
     if (!e || e.code !== "app/duplicate-app") {
-      console.error("Firebase init hatası:", e);
+      console.warn("Firebase init (auth) uyarı:", e);
     }
   }
 
   auth = firebase.auth();
-
-  // Oturum değişince çalışır
-  auth.onAuthStateChanged(function (fbUser) {
-    var infoEl = document.getElementById("loginInfo");
-
-    if (!fbUser) {
-      saveCurrentUser(null);
-      if (infoEl) {
-        infoEl.textContent = "Giriş yapılmamış.";
-        infoEl.style.color = "#9ca3af";
-      }
-      return;
-    }
-
-    var users = getUsers();
-    var u = users.find(function (x) { return x.uid === fbUser.uid; });
-
-    if (!u) {
-      u = {
-        uid: fbUser.uid,
-        username: (fbUser.email || "").split("@")[0],
-        email: fbUser.email,
-        password: null,
-        role: "user",
-        profile: {},
-        friends: [],
-        friendRequests: [],
-        badges: []
-      };
-      users.push(u);
-      saveUsers(users);
-    }
-
-    var localUser = {
-      uid: fbUser.uid,
-      username: u.username,
-      email: fbUser.email,
-      password: null,
-      role: u.role || "user",
-      profile: u.profile || {},
-      friends: u.friends || [],
-      friendRequests: u.friendRequests || [],
-      badges: u.badges || []
-    };
-
-    saveCurrentUser(localUser);
-
-    if (infoEl) {
-      infoEl.textContent =
-        "Şu an giriş yapan: " + localUser.username + " (" + localUser.email + ")";
-      infoEl.style.color = "#e5e5e5";
-    }
-  });
+  console.log("Auth hazır.");
 })();
 
-/* ============ KAYIT ============ */
-function registerUser() {
-  var usernameEl = document.getElementById("regUsername");
-  var emailEl    = document.getElementById("regEmail");
-  var passEl     = document.getElementById("regPassword");
-  var infoEl     = document.getElementById("registerInfo");
+// Yardımcı: Firebase user + Firestore userData -> local currentUser formatı
+function toLocalUserFromData(uid, email, data) {
+  if (!uid || !email || !data) return null;
 
-  var username = usernameEl.value.trim();
-  var email    = emailEl.value.trim().toLowerCase();
-  var password = passEl.value;
+  return {
+    uid: uid,
+    email: email,
+    username: data.username || (email.split("@")[0] || "kullanici"),
+    role: data.role || "user",
+    profile: data.profile || {},
+    friends: data.friends || [],
+    friendRequests: data.friendRequests || [],
+    badges: data.badges || []
+  };
+}
+
+/* ============ KAYIT ============ */
+async function registerUser() {
+  const usernameEl = document.getElementById("regUsername");
+  const emailEl    = document.getElementById("regEmail");
+  const passEl     = document.getElementById("regPassword");
+  const infoEl     = document.getElementById("registerInfo");
+
+  const username = (usernameEl.value || "").trim();
+  const email    = (emailEl.value || "").trim().toLowerCase();
+  const password = passEl.value || "";
 
   if (!auth) {
-    alert("Auth hazır değil (Firebase yüklenemedi)");
+    alert("Auth hazır değil (Firebase yüklenemedi).");
     return;
   }
 
@@ -98,9 +68,8 @@ function registerUser() {
     return;
   }
 
-  var low = username.toLowerCase();
-  if (typeof bannedWords !== "undefined" &&
-      bannedWords.some(function (w) { return low.includes(w); })) {
+  const low = username.toLowerCase();
+  if (bannedWords.some(w => low.includes(w))) {
     infoEl.textContent = "Bu kullanıcı adı uygun değil.";
     infoEl.style.color = "#f87171";
     return;
@@ -109,64 +78,80 @@ function registerUser() {
   infoEl.textContent = "Kayıt yapılıyor...";
   infoEl.style.color = "#e5e5e5";
 
-  auth.createUserWithEmailAndPassword(email, password)
-    .then(function (cred) {
-      var fbUser = cred.user;
+  try {
+    const firestore = firebase.firestore();
+    const usersRef = firestore.collection("users");
 
-      var users = getUsers();
-      users.push({
-        uid: fbUser.uid,
-        username: username,
-        email: fbUser.email,
-        password: null,
-        role: "user",
-        profile: {},
-        friends: [],
-        friendRequests: [],
-        badges: []
-      });
-      saveUsers(users);
+    // Kullanıcı adı benzersiz mi? (usernameLower ile kontrol)
+    const usernameLower = username.toLowerCase();
+    const usernameSnap = await usersRef
+      .where("usernameLower", "==", usernameLower)
+      .get();
 
-      var localUser = {
-        uid: fbUser.uid,
-        username: username,
-        email: fbUser.email,
-        password: null,
-        role: "user",
-        profile: {},
-        friends: [],
-        friendRequests: [],
-        badges: []
-      };
-      saveCurrentUser(localUser);
-
-      infoEl.textContent = "Kayıt başarılı! Oturum açtınız.";
-      infoEl.style.color = "#4ade80";
-
-      usernameEl.value = "";
-      emailEl.value = "";
-      passEl.value = "";
-    })
-    .catch(function (err) {
-      console.error("REGISTER ERROR:", err);
-      infoEl.textContent = "Hata: " + (err.message || "Kayıt başarısız.");
+    if (!usernameSnap.empty) {
+      infoEl.textContent = "Bu kullanıcı adı alınmış.";
       infoEl.style.color = "#f87171";
-      // burada err.code olmayabiliyor, o yüzden message gösterelim
-      alert("Kayıt hatası: " + (err.message || err.code || "Bilinmeyen hata"));
+      return;
+    }
+
+    // Firebase Auth tarafında kullanıcı oluştur
+    const cred = await auth.createUserWithEmailAndPassword(email, password);
+    const fbUser = cred.user;
+
+    // İlk kayıt sırasında Wooziedev11 ise direkt admin yap
+    const isOwner = usernameLower === "wooziedev11";
+    const role = isOwner ? "admin" : "user";
+
+    // Firestore'da users/{uid} dokümanı
+    await usersRef.doc(fbUser.uid).set({
+      username: username,
+      usernameLower: usernameLower,
+      email: fbUser.email,
+      role: role,
+      profile: {},
+      friends: [],
+      friendRequests: [],
+      badges: [],
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+
+    const localUser = toLocalUserFromData(fbUser.uid, fbUser.email, {
+      username,
+      role,
+      profile: {},
+      friends: [],
+      friendRequests: [],
+      badges: []
+    });
+
+    saveCurrentUser(localUser);
+
+    infoEl.textContent = "Kayıt başarılı! Oturum açtınız.";
+    infoEl.style.color = "#4ade80";
+
+    usernameEl.value = "";
+    emailEl.value = "";
+    passEl.value = "";
+  } catch (err) {
+    console.error("REGISTER ERROR:", err);
+    const msg = err && err.message ? err.message : "Kayıt başarısız.";
+    infoEl.textContent = "Hata: " + msg;
+    infoEl.style.color = "#f87171";
+    alert("Kayıt hatası: " + (err.code || msg));
+  }
 }
 
 /* ============ GİRİŞ ============ */
-function loginUser() {
-  var emailEl = document.getElementById("loginEmail");
-  var passEl  = document.getElementById("loginPassword");
-  var infoEl  = document.getElementById("loginInfo");
+async function loginUser() {
+  const emailEl = document.getElementById("loginEmail");
+  const passEl  = document.getElementById("loginPassword");
+  const infoEl  = document.getElementById("loginInfo");
 
-  var email    = emailEl.value.trim().toLowerCase();
-  var password = passEl.value;
+  const email    = (emailEl.value || "").trim().toLowerCase();
+  const password = passEl.value || "";
 
   if (!auth) {
-    alert("Auth hazır değil (Firebase yüklenemedi)");
+    alert("Auth hazır değil (Firebase yüklenemedi).");
     return;
   }
 
@@ -179,53 +164,97 @@ function loginUser() {
   infoEl.textContent = "Giriş yapılıyor...";
   infoEl.style.color = "#e5e5e5";
 
-  auth.signInWithEmailAndPassword(email, password)
-    .then(function (cred) {
-      var fbUser = cred.user;
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    // onAuthStateChanged içinden localUser set edilecek.
+    infoEl.textContent = "Giriş başarılı.";
+    infoEl.style.color = "#4ade80";
 
-      var users = getUsers();
-      var u = users.find(function (x) { return x.uid === fbUser.uid; });
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 700);
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
+    const msg = err && err.message ? err.message : "Giriş başarısız.";
+    infoEl.textContent = "Hata: " + msg;
+    infoEl.style.color = "#f87171";
+    alert("Giriş hatası: " + (err.code || msg));
+  }
+}
 
-      if (!u) {
-        u = {
-          uid: fbUser.uid,
-          username: (fbUser.email || "").split("@")[0],
-          email: fbUser.email,
-          password: null,
-          role: "user",
+/* ============ OTURUM TAKİBİ ============ */
+if (typeof firebase !== "undefined") {
+  auth = firebase.auth();
+
+  auth.onAuthStateChanged(async (fbUser) => {
+    const infoEl = document.getElementById("loginInfo");
+
+    if (!fbUser) {
+      saveCurrentUser(null);
+      if (infoEl) {
+        infoEl.textContent = "Giriş yapılmamış.";
+        infoEl.style.color = "#9ca3af";
+      }
+      return;
+    }
+
+    try {
+      const firestore = firebase.firestore();
+      const usersRef = firestore.collection("users");
+      const docRef = usersRef.doc(fbUser.uid);
+      const snap = await docRef.get();
+
+      let data;
+
+      if (!snap.exists) {
+        // İlk kez giriş yapan (veya eski kayıt), kullanıcı dokümanı yoksa oluştur
+        const email = fbUser.email || "";
+        const usernameFromMail = email.split("@")[0] || "kullanici";
+        const usernameLower = usernameFromMail.toLowerCase();
+
+        const isOwner = usernameLower === "wooziedev11";
+        const role = isOwner ? "admin" : "user";
+
+        data = {
+          username: usernameFromMail,
+          usernameLower: usernameLower,
+          email: email,
+          role: role,
           profile: {},
           friends: [],
           friendRequests: [],
-          badges: []
+          badges: [],
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
-        users.push(u);
-        saveUsers(users);
+
+        await docRef.set(data);
+      } else {
+        data = snap.data() || {};
+        // Eğer rol yoksa ve kullanıcı adı Wooziedev11 ise, otomatik admin'e çek
+        const usernameLower = (data.username || "")
+          .toString()
+          .toLowerCase();
+        if (!data.role && usernameLower === "wooziedev11") {
+          data.role = "admin";
+          await docRef.update({ role: "admin" });
+        }
       }
 
-      var localUser = {
-        uid: fbUser.uid,
-        username: u.username,
-        email: fbUser.email,
-        password: null,
-        role: u.role || "user",
-        profile: u.profile || {},
-        friends: u.friends || [],
-        friendRequests: u.friendRequests || [],
-        badges: u.badges || []
-      };
+      const localUser = toLocalUserFromData(fbUser.uid, fbUser.email, data);
       saveCurrentUser(localUser);
 
-      infoEl.textContent = "Giriş başarılı: " + localUser.username;
-      infoEl.style.color = "#4ade80";
-
-      setTimeout(function () {
-        window.location.href = "index.html";
-      }, 700);
-    })
-    .catch(function (err) {
-      console.error("LOGIN ERROR:", err);
-      infoEl.textContent = "Hata: " + (err.message || "Giriş başarısız.");
-      infoEl.style.color = "#f87171";
-      alert("Giriş hatası: " + (err.message || err.code || "Bilinmeyen hata"));
-    });
+      if (infoEl) {
+        infoEl.textContent =
+          "Şu an giriş yapan: " +
+          localUser.username +
+          " (" +
+          localUser.email +
+          ") – rol: " +
+          localUser.role;
+        infoEl.style.color = "#e5e5e5";
+      }
+    } catch (err) {
+      console.error("Auth state -> user doc hatası:", err);
+    }
+  });
 }
