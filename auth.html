@@ -8,21 +8,29 @@
 </head>
 <body class="page-auth">
 
-  <!-- KARARMA -->
+  <!-- KARARMA OVERLAY -->
   <div id="overlay"></div>
 
   <!-- HEADER -->
   <header class="header">
-    <div class="logo" onclick="location.href='index.html'">NexuForge</div>
+    <div class="logo" onclick="location.href='index.html'">
+      NEXUFORGE
+      <span>Giriş / Üyelik</span>
+    </div>
     <div class="header-right">
-      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
-      <div id="menuToggle" class="edge-toggle">‹</div>
+      <button class="icon-btn" onclick="location.href='notifications.html'">
+        🔔
+      </button>
     </div>
   </header>
 
-  <!-- SAĞ MENÜ -->
+  <!-- SAĞ KENAR OKU (MENÜ İÇİN) -->
+  <div id="menuToggle" class="edge-toggle">‹</div>
+
+  <!-- SAĞDAN AÇILAN MENÜ -->
   <nav id="sidebar" class="sidebar">
     <button id="closeSidebar" class="close-btn">✕</button>
+    <h3>Menü</h3>
 
     <a href="index.html">🏠 Ana Sayfa</a>
     <a href="products.html">🛒 Ürünler</a>
@@ -32,8 +40,13 @@
     <a href="auth.html">🔐 Giriş / Üyelik</a>
     <a href="about.html">ℹ️ Hakkımızda</a>
     <a href="contact.html">📞 İletişim</a>
+    <a href="settings.html">⚙️ Ayarlar</a>
+    <a href="notifications.html">📨 Bildirimler</a>
 
-    <a id="adminLink" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
+    <!-- Admin sadece belirli kullanıcıda görünecek (JS ile açılacak) -->
+    <a id="adminLink" href="admin.html" class="admin-link" style="display:none;">
+      ⚡ Admin Panel
+    </a>
   </nav>
 
   <!-- İÇERİK -->
@@ -41,6 +54,7 @@
     <section class="auth-box">
       <h2>Üyelik</h2>
 
+      <!-- KAYIT -->
       <div class="auth-section">
         <h3>Kayıt Ol</h3>
         <input id="regUsername" placeholder="Kullanıcı adı" />
@@ -50,27 +64,37 @@
         <p class="small-text" id="registerInfo"></p>
       </div>
 
+      <!-- GİRİŞ -->
       <div class="auth-section">
         <h3>Giriş Yap</h3>
         <input id="loginEmail" type="email" placeholder="E-posta" />
         <input id="loginPassword" type="password" placeholder="Şifre" />
         <button onclick="loginUser()">Giriş Yap</button>
+
+        <p class="small-text">
+          Şifreni mi unuttun?
+          <a href="#" onclick="sendPasswordResetLink(); return false;">
+            Şifre sıfırlama maili gönder
+          </a>
+        </p>
+
         <p class="small-text" id="loginInfo"></p>
       </div>
     </section>
   </main>
-  <!-- SCRIPTLER -->
+
+  <!-- ORTAK UI -->
   <script src="js/ui.js"></script>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDK (compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-  <!-- Senin JS dosyaların -->
+  <!-- Proje JS -->
   <script src="js/firebase-init.js"></script>
+  <script src="js/db-init.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/auth-firebase.js"></script>
-  
 </body>
 </html>
