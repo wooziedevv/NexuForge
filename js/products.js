@@ -1,68 +1,79 @@
 // js/products.js
-// Firestore'daki "products" koleksiyonunu okuyup kart olarak gösterir.
+// Firestore'dan "products" koleksiyonunu çekip ürün kartlarına çevirir.
 
-(function initProductList() {
-  if (!db) {
-    console.error("db yok (Firestore).");
+(function () {
+  if (typeof db === "undefined" || !db) {
+    console.error("Firestore (db) yok, products.js çalışmıyor.");
     return;
   }
 
-  const grid = document.getElementById("productsGrid");
-  const emptyText = document.getElementById("productsEmptyText");
+  const listEl = document.getElementById("productList");
+  const infoEl = document.getElementById("productsInfo");
 
-  if (!grid) return;
+  if (!listEl) {
+    console.warn("productList elementi bulunamadı (id='productList').");
+    return;
+  }
 
-  // Canlı dinleme: ürün eklenince / silinince anında güncellenir
+  // İlk mesaj
+  if (infoEl) {
+    infoEl.textContent = "Ürünler yükleniyor...";
+  }
+
+  // Firestore'dan canlı dinleme
   db.collection("products")
     .orderBy("createdAt", "desc")
     .onSnapshot(
       (snap) => {
         if (snap.empty) {
-          grid.innerHTML = "";
-          if (emptyText) emptyText.style.display = "block";
+          listEl.innerHTML = "";
+          if (infoEl) {
+            infoEl.textContent = "Henüz hiç ürün eklenmemiş.";
+          }
           return;
         }
 
-        if (emptyText) emptyText.style.display = "none";
-        grid.innerHTML = "";
+        listEl.innerHTML = "";
+        if (infoEl) {
+          infoEl.textContent = "";
+        }
 
         snap.forEach((doc) => {
-          const p = doc.data();
-          const id = doc.id;
+          const p = doc.data() || {};
+          const name = p.name || "İsimsiz ürün";
+          const price = typeof p.price === "number" ? p.price : 0;
+          const stock = typeof p.stock === "number" ? p.stock : 0;
+          const img =
+            p.imageUrl ||
+            "https://via.placeholder.com/400x240?text=NexuForge";
+
+          const stockClass =
+            stock > 0 ? "product-stock" : "product-stock out";
+          const stockText = stock > 0 ? `Stok: ${stock}` : "Tükendi";
 
           const card = document.createElement("article");
           card.className = "product-card";
 
-          const imgUrl =
-            p.imageUrl ||
-            "https://via.placeholder.com/400x240?text=NexuForge+Product";
-
-          const stockClass =
-            p.stock > 0 ? "product-stock" : "product-stock out";
-          const stockText = p.stock > 0 ? `Stok: ${p.stock}` : "Tükendi";
-
           card.innerHTML = `
-            <div class="product-image-wrap">
-              <img src="${imgUrl}" alt="${p.name || ""}">
-            </div>
+            <img src="${img}" alt="${name}">
             <div class="product-body">
-              <div class="product-title">${p.name || "İsimsiz Ürün"}</div>
-              <div class="product-meta">
-                <span class="product-price">${p.price || 0} TL</span>
-                <span class="${stockClass}">${stockText}</span>
-              </div>
+              <div class="product-title">${name}</div>
+              <div class="product-price">${price} TL</div>
+              <div class="${stockClass}">${stockText}</div>
             </div>
           `;
 
-          grid.appendChild(card);
+          listEl.appendChild(card);
         });
       },
       (err) => {
         console.error("Ürünleri çekerken hata:", err);
-        if (emptyText) {
-          emptyText.style.display = "block";
-          emptyText.textContent =
-            "Ürünler yüklenirken hata oluştu: " + (err.message || "");
+        listEl.innerHTML = "";
+        if (infoEl) {
+          infoEl.textContent =
+            "Ürünler yüklenirken hata oluştu: " +
+            (err.message || "bilinmeyen hata");
+          infoEl.style.color = "#f87171";
         }
       }
     );
