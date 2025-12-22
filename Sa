@@ -6,19 +6,23 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function userDoc(uid) {
-      return get(/databases/$(database)/documents/users/$(uid));
+    function myUserPath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function hasUserDoc() {
+      return signedIn() && exists(myUserPath());
     }
 
     function myRole() {
-      // users/{uid} yoksa "guest"
-      if (!signedIn()) return "guest";
-
-      let snap = userDoc(request.auth.uid);
-      if (!snap.exists()) return "guest";
-
-      // role alanı yoksa "user"
-      return snap.data.keys().hasAny(["role"]) ? snap.data.role : "user";
+      // users doc yoksa guest, varsa role yoksa user
+      return hasUserDoc()
+        ? (
+            get(myUserPath()).data.role != null
+              ? get(myUserPath()).data.role
+              : "user"
+          )
+        : "guest";
     }
 
     function isAdminOrMod() {
@@ -37,19 +41,19 @@ service cloud.firestore {
        USERS
     ========================= */
     match /users/{uid} {
+      // DM arama için login olanlar okuyabilir
       allow read: if signedIn();
+
+      // Kayıt olurken kendi docunu oluşturabilir
       allow create: if isMe(uid);
 
       // Kullanıcı kendi güvenli alanlarını güncelleyebilir
       // Admin/mod her şeyi güncelleyebilir
-      allow update: if (isMe(uid) && canUserUpdateOwnSafeFields())
-                    || isAdminOrMod();
+      allow update: if (isMe(uid) && canUserUpdateOwnSafeFields()) || isAdminOrMod();
 
       allow delete: if false;
 
       function canUserUpdateOwnSafeFields() {
-        // Normal kullanıcı şu alanları değiştiremesin:
-        // role, badges, friends, friendRequests
         return !(request.resource.data.diff(resource.data).changedKeys()
           .hasAny(["role", "badges", "friends", "friendRequests"]));
       }
@@ -78,8 +82,7 @@ service cloud.firestore {
       allow read: if resource.data.to == "everyone"
                   || (signedIn() && resource.data.to == request.auth.uid);
 
-      allow create: if isAdminOnly();
-      allow update, delete: if isAdminOnly();
+      allow create, update, delete: if isAdminOnly();
     }
 
     /* =========================
@@ -88,40 +91,39 @@ service cloud.firestore {
     match /dms/{dmId} {
 
       function isParticipant(participants) {
-        return participants is list
+        return signedIn()
+          && participants is list
           && participants.size() == 2
           && participants.hasAny([request.auth.uid]);
       }
 
-      allow read: if signedIn() && isParticipant(resource.data.participants);
+      allow read: if isParticipant(resource.data.participants);
 
       allow create: if signedIn()
-                    && request.resource.data.keys().hasAll(["participants"])
-                    && request.resource.data.participants.size() == 2
-                    && request.resource.data.participants.hasAny([request.auth.uid]);
+        && request.resource.data.keys().hasAll(["participants"])
+        && request.resource.data.participants is list
+        && request.resource.data.participants.size() == 2
+        && request.resource.data.participants.hasAny([request.auth.uid]);
 
-      allow update: if signedIn()
-                    && isParticipant(resource.data.participants)
-                    && request.resource.data.participants == resource.data.participants;
+      allow update: if isParticipant(resource.data.participants)
+        && request.resource.data.participants == resource.data.participants;
 
       allow delete: if false;
 
       match /messages/{msgId} {
         allow read: if signedIn()
-                    && isParticipant(get(/databases/$(database)/documents/dms/$(dmId)).data.participants);
+          && isParticipant(get(/databases/$(database)/documents/dms/$(dmId)).data.participants);
 
         allow create: if signedIn()
-                      && isParticipant(get(/databases/$(database)/documents/dms/$(dmId)).data.participants)
-                      && request.resource.data.fromUid == request.auth.uid
-                      && request.resource.data.keys().hasAll(["fromUid","toUid","text","createdAt"]);
+          && isParticipant(get(/databases/$(database)/documents/dms/$(dmId)).data.participants)
+          && request.resource.data.fromUid == request.auth.uid
+          && request.resource.data.keys().hasAll(["fromUid","toUid","text","createdAt"]);
 
         allow update, delete: if false;
       }
     }
 
-    /* =========================
-       Default deny
-    ========================= */
+    /* Default deny */
     match /{document=**} {
       allow read, write: if false;
     }
