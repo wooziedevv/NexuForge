@@ -8,59 +8,43 @@
 </head>
 <body class="page-admin">
 
-  <!-- KARARMA OVERLAY -->
   <div id="overlay"></div>
 
-  <!-- HEADER -->
   <header class="header">
-    <div class="logo" onclick="location.href='index.html'">
-      NEXUFORGE
-      <span>Admin Panel</span>
-    </div>
+    <div class="logo" onclick="location.href='index.html'">NexuForge</div>
     <div class="header-right">
-      <button class="icon-btn" onclick="location.href='notifications.html'">
-        🔔
-      </button>
+      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
+      <button class="icon-btn" onclick="location.href='dm.html'">👥</button>
+      <div id="menuToggle" class="edge-toggle">‹</div>
     </div>
   </header>
 
-  <!-- SAĞ KENAR OKU (MENÜ İÇİN) -->
-  <div id="menuToggle" class="edge-toggle">‹</div>
-
-  <!-- SAĞDAN AÇILAN MENÜ -->
   <nav id="sidebar" class="sidebar">
     <button id="closeSidebar" class="close-btn">✕</button>
-    <h3>Menü</h3>
 
     <a href="index.html">🏠 Ana Sayfa</a>
     <a href="products.html">🛒 Ürünler</a>
     <a href="scrims.html">🎮 Scrim / Event</a>
     <a href="dm.html">💬 Sohbet / DM</a>
     <a href="profile.html">👤 Profilim</a>
-    <a href="auth.html">🔐 Giriş / Üyelik</a>
+    <a href="settings.html">⚙️ Ayarlar</a>
     <a href="about.html">ℹ️ Hakkımızda</a>
     <a href="contact.html">📞 İletişim</a>
-    <a href="settings.html">⚙️ Ayarlar</a>
-    <a href="notifications.html">📨 Bildirimler</a>
 
-    <!-- Admin link bu sayfadasın ama tutuyoruz -->
-    <a id="adminLink" href="admin.html" class="admin-link">
-      ⚡ Admin Panel
-    </a>
+    <a id="adminLink" href="admin.html" class="admin-link">⚡ Admin Panel</a>
   </nav>
 
-  <!-- İÇERİK -->
-  <main class="main admin-main">
+  <main class="admin-main main">
 
-    <section class="page-header">
-      <h1>Admin Panel</h1>
-      <p>Sadece admin / mod hesapları içindir. Ürünler ve kullanıcı rolleri burada yönetilir.</p>
-      <p id="adminUserInfo" class="small-text"></p>
+    <!-- ADMIN BİLGİ -->
+    <section class="admin-section">
+      <h2>Admin Panel</h2>
+      <p class="small-text" id="adminUserInfo"></p>
     </section>
 
-    <!-- ÜRÜN YÖNETİMİ -->
+    <!-- ÜRÜN EKLE -->
     <section class="admin-section">
-      <h2>Ürünler</h2>
+      <h2>Ürün Ekle</h2>
 
       <form id="productForm" class="admin-form">
         <div class="form-row">
@@ -70,43 +54,94 @@
 
         <div class="form-row">
           <label>Fiyat (TL)</label>
-          <input id="prodPrice" type="number" min="0" step="0.01" placeholder="Örn: 499" required />
+          <input id="prodPrice" type="number" step="0.01" required />
         </div>
 
         <div class="form-row">
-          <label>Stok (adet)</label>
-          <input id="prodStock" type="number" min="0" step="1" placeholder="Örn: 25" required />
+          <label>Stok</label>
+          <input id="prodStock" type="number" required />
         </div>
 
         <div class="form-row">
-          <label>Görsel URL</label>
-          <input id="prodImage" placeholder="https:// ile başlayan görsel linki (opsiyonel)" />
+          <label>Görsel URL (opsiyonel)</label>
+          <input id="prodImage" placeholder="https://..." />
         </div>
 
         <button type="submit" class="btn btn-primary">Ürün Ekle</button>
         <p id="productFormInfo" class="small-text"></p>
       </form>
-
-      <div id="adminProductsList" class="admin-products-list">
-        <!-- Ürünler JS ile yüklenecek -->
-      </div>
     </section>
 
-    <!-- KULLANICI & ROL YÖNETİMİ -->
+    <!-- ÜRÜNLER -->
     <section class="admin-section">
-      <h2>Kullanıcılar & Roller</h2>
+      <h2>Ürünler</h2>
+      <div id="adminProductsList" class="admin-products-list"></div>
+    </section>
+
+    <!-- KULLANICILAR -->
+    <section class="admin-section">
+      <h2>Kullanıcılar</h2>
+      <div id="adminUsersList" class="admin-users-list"></div>
+    </section>
+
+    <!-- SCRIM / EVENT EKLE -->
+    <section class="admin-section">
+      <h2>Scrim / Event Ekle</h2>
+
+      <form id="scrimForm" class="admin-form">
+        <div class="form-row">
+          <label>Etkinlik Adı</label>
+          <input id="eventName" placeholder="Örn: Valorant Scrim" required />
+        </div>
+
+        <div class="form-row">
+          <label>Tarih / Saat</label>
+          <input id="eventDate" placeholder="Örn: 2025-01-10 20:00" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Event Ekle</button>
+        <p id="scrimFormInfo" class="small-text"></p>
+      </form>
+
       <p class="small-text">
-        Bu listeyi sadece admin hesapları görebilir. Buradan user / mod / admin / verified rolü atayabilirsin.
+        Eventler <strong>scrims.html</strong> sayfasında canlı görünür.
+      </p>
+    </section>
+
+    <!-- BİLDİRİM GÖNDER -->
+    <section class="admin-section">
+      <h2>Bildirim Gönder</h2>
+
+      <p class="small-text">
+        Hedef alanına <code>everyone</code> yazarsan herkese gider.  
+        İstersen kullanıcı UID’si de yazabilirsin.
       </p>
 
-      <div id="adminUsersList" class="admin-users-list">
-        <!-- Kullanıcılar JS ile yüklenecek -->
-      </div>
+      <form id="notifForm" class="admin-form">
+        <div class="form-row">
+          <label>Hedef (everyone / uid)</label>
+          <input id="notifTo" placeholder="everyone" required />
+        </div>
+
+        <div class="form-row">
+          <label>Başlık</label>
+          <input id="notifTitle" placeholder="Örn: Turnuva başlıyor!" required />
+        </div>
+
+        <div class="form-row">
+          <label>Mesaj</label>
+          <input id="notifText" placeholder="Mesaj..." required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Bildirim Gönder</button>
+        <p id="notifFormInfo" class="small-text"></p>
+      </form>
     </section>
 
   </main>
 
-  <!-- ORTAK UI -->
+  <!-- GENEL -->
+  <script src="js/utils.js"></script>
   <script src="js/ui.js"></script>
 
   <!-- Firebase SDK (compat) -->
@@ -114,13 +149,15 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-  <!-- Proje JS -->
+  <!-- Firebase init -->
   <script src="js/firebase-init.js"></script>
   <script src="js/db-init.js"></script>
-  <script src="js/utils.js"></script>
   <script src="js/auth-firebase.js"></script>
+
+  <!-- Admin logic -->
   <script src="js/admin-products.js"></script>
   <script src="js/admin-users.js"></script>
   <script src="js/admin-extra.js"></script>
+
 </body>
 </html>
