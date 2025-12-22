@@ -42,7 +42,7 @@
       <p class="small-text" id="settingsInfo"></p>
 
       <div class="settings-grid">
-        <div class="card settings-group">
+        <div class="card settings-group" style="padding:14px;">
           <h3>Hesap Bilgileri</h3>
           <p><strong>Kullanıcı adı:</strong> <span id="setUsername"></span></p>
           <p><strong>E-posta:</strong> <span id="setEmail"></span></p>
@@ -55,7 +55,7 @@
           <button onclick="changePassword()">Şifreyi Güncelle</button>
         </div>
 
-        <div class="card settings-group">
+        <div class="card settings-group" style="padding:14px;">
           <h3>Güvenlik & Çıkış</h3>
           <h4>Güvenlik</h4>
           <input id="phoneInput" placeholder="Telefon (sadece size görünür)" />
@@ -81,6 +81,15 @@
 
   <script src="js/utils.js"></script>
   <script src="js/ui.js"></script>
-  <script src="js/settings.js"></script>
+
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script src="js/firebase-init.js"></script>
+  <script src="js/db-init.js"></script>
+  <script src="js/auth-firebase.js"></script>
+  <script src="js/settings-firebase.js"></script>
 </body>
 </html>
