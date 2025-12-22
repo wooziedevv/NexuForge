@@ -1,86 +1,153 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ayarlar – NexuForge</title>
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
+// js/settings-firebase.js
+// Ayarlar: profil güvenlik alanları (Firestore) + şifre değiştir (Firebase Auth) + çıkış
 
-  <div id="overlay"></div>
+(function () {
+  if (typeof firebase === "undefined") {
+    console.error("Firebase global yok (settings-firebase).");
+    return;
+  }
+  if (typeof db === "undefined" || !db) {
+    console.error("Firestore (db) yok (settings-firebase).");
+    return;
+  }
 
-  <header class="header">
-    <div class="logo" onclick="location.href='index.html'">NexuForge</div>
-    <div class="header-right">
-      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
-      <button class="icon-btn" onclick="location.href='dm.html'">👥</button>
-      <div id="menuToggle" class="edge-toggle">‹</div>
-    </div>
-  </header>
+  const auth = firebase.auth();
 
-  <nav id="sidebar" class="sidebar">
-    <button id="closeSidebar" class="close-btn">✕</button>
+  const settingsInfo = document.getElementById("settingsInfo");
+  const setUsername = document.getElementById("setUsername");
+  const setEmail = document.getElementById("setEmail");
+  const setRoles = document.getElementById("setRoles");
 
-    <a href="index.html" class="nav-guest-only">🏠 Ana Sayfa</a>
-    <a href="auth.html"  class="nav-guest-only">🔐 Giriş / Üyelik</a>
+  const phoneInput = document.getElementById("phoneInput");
+  const notifEmail = document.getElementById("notifEmail");
+  const notifSite  = document.getElementById("notifSite");
+  const notifSound = document.getElementById("notifSound");
 
-    <a href="products.html">🛒 Ürünler</a>
-    <a href="scrims.html">🎮 Scrim / Event</a>
-    <a href="dm.html">💬 Sohbet / DM</a>
-    <a href="profile.html">👤 Profilim</a>
-    <a href="settings.html" class="nav-auth-only">⚙️ Ayarlar</a>
-    <a href="about.html">ℹ️ Hakkımızda</a>
-    <a href="contact.html">📞 İletişim</a>
+  let me = null;
 
-    <a id="adminLink" href="admin.html" class="admin-link">⚡ Admin Panel</a>
-  </nav>
+  function rolesText(u){
+    const roles = [];
+    if (!u) return "Standart kullanıcı";
+    if (u.role === "admin") roles.push("Admin");
+    if (u.role === "mod") roles.push("Mod");
+    if (u.badges?.includes("verified-blue")) roles.push("Doğrulanmış (Mavi Tik)");
+    if (u.badges?.includes("verified-gold")) roles.push("Sarı Tik");
+    return roles.join(", ") || "Standart kullanıcı";
+  }
 
-  <main class="main">
-    <section class="page-section">
-      <h2>Ayarlar</h2>
-      <p class="small-text" id="settingsInfo"></p>
+  function render(){
+    if (!settingsInfo) return;
 
-      <div class="settings-grid">
-        <div class="card settings-group">
-          <h3>Hesap Bilgileri</h3>
-          <p><strong>Kullanıcı adı:</strong> <span id="setUsername"></span></p>
-          <p><strong>E-posta:</strong> <span id="setEmail"></span></p>
-          <p><strong>Roller:</strong> <span id="setRoles"></span></p>
+    if (!me){
+      settingsInfo.textContent = "Ayarları görmek için giriş yapmanız gerekiyor.";
+      settingsInfo.style.color = "#f87171";
+      return;
+    }
 
-          <h4>Şifre Değiştir</h4>
-          <input id="oldPwd" type="password" placeholder="Eski şifre" />
-          <input id="newPwd" type="password" placeholder="Yeni şifre" />
-          <input id="newPwd2" type="password" placeholder="Yeni şifre tekrar" />
-          <button onclick="changePassword()">Şifreyi Güncelle</button>
-        </div>
+    settingsInfo.textContent = "Hesabı düzenliyorsunuz: " + (me.username || "");
+    settingsInfo.style.color = "#e5e5e5";
 
-        <div class="card settings-group">
-          <h3>Güvenlik & Çıkış</h3>
-          <h4>Güvenlik</h4>
-          <input id="phoneInput" placeholder="Telefon (sadece size görünür)" />
-          <label style="font-size:13px;display:block;margin:6px 0;">
-            <input id="notifEmail" type="checkbox" /> E-posta bildirimlerini aç
-          </label>
-          <label style="font-size:13px;display:block;margin:6px 0;">
-            <input id="notifSite" type="checkbox" /> Site içi bildirimleri aç
-          </label>
-          <label style="font-size:13px;display:block;margin:6px 0;">
-            <input id="notifSound" type="checkbox" /> Sesli bildirimleri aç
-          </label>
-          <button onclick="saveSecurity()">Kaydet</button>
+    if (setUsername) setUsername.textContent = me.username || "";
+    if (setEmail) setEmail.textContent = me.email || "";
+    if (setRoles) setRoles.textContent = rolesText(me);
 
-          <hr>
+    const p = me.profile || {};
+    if (phoneInput) phoneInput.value = p.phone || "";
+    if (notifEmail) notifEmail.checked = !!p.notifEmail;
+    if (notifSite)  notifSite.checked  = !!p.notifSite;
+    if (notifSound) notifSound.checked = !!p.notifSound;
+  }
 
-          <h4>Çıkış</h4>
-          <button style="background:#ef4444;color:#fff;" onclick="logoutConfirm()">Çıkış Yap</button>
-        </div>
-      </div>
-    </section>
-  </main>
+  async function saveSecurity(){
+    if (!me) return alert("Giriş yapmalısınız.");
 
-  <script src="js/utils.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/settings.js"></script>
-</body>
-</html>
+    const updates = {
+      profile: {
+        ...(me.profile || {}),
+        phone: (phoneInput?.value || "").trim(),
+        notifEmail: !!notifEmail?.checked,
+        notifSite:  !!notifSite?.checked,
+        notifSound: !!notifSound?.checked
+      }
+    };
+
+    try{
+      await db.collection("users").doc(me.uid).set(updates, { merge: true });
+      alert("Güvenlik ayarları kaydedildi.");
+    }catch(err){
+      console.error("saveSecurity hata:", err);
+      alert("Kaydedilemedi: " + (err.message || "bilinmeyen"));
+    }
+  }
+
+  async function changePassword(){
+    const fbUser = auth.currentUser;
+    if (!fbUser) return alert("Giriş yapmalısınız.");
+
+    const oldPwd = document.getElementById("oldPwd").value;
+    const newPwd = document.getElementById("newPwd").value;
+    const newPwd2= document.getElementById("newPwd2").value;
+
+    if (!oldPwd || !newPwd || !newPwd2) return alert("Tüm şifre alanlarını doldurun.");
+    if (newPwd !== newPwd2) return alert("Yeni şifreler eşleşmiyor.");
+    if (newPwd.length < 6) return alert("Yeni şifre en az 6 karakter olmalı.");
+
+    try{
+      const cred = firebase.auth.EmailAuthProvider.credential(fbUser.email, oldPwd);
+      await fbUser.reauthenticateWithCredential(cred);
+      await fbUser.updatePassword(newPwd);
+
+      alert("Şifre güncellendi.");
+
+      document.getElementById("oldPwd").value = "";
+      document.getElementById("newPwd").value = "";
+      document.getElementById("newPwd2").value = "";
+    }catch(err){
+      console.error("changePassword hata:", err);
+      alert("Şifre güncellenemedi: " + (err.message || "bilinmeyen"));
+    }
+  }
+
+  async function logoutConfirm(){
+    if (!confirm("Çıkış yapmak istediğinize emin misiniz?")) return;
+
+    try { await auth.signOut(); } catch(e){}
+    try { saveCurrentUser(null); } catch(e){}
+    window.location.href = "auth.html";
+  }
+
+  // HTML'deki onclick'ler için global
+  window.saveSecurity = saveSecurity;
+  window.changePassword = changePassword;
+  window.logoutConfirm = logoutConfirm;
+
+  auth.onAuthStateChanged((fbUser) => {
+    if (!fbUser){
+      me = null;
+      render();
+      return;
+    }
+
+    db.collection("users").doc(fbUser.uid).onSnapshot((snap) => {
+      if (!snap.exists) return;
+      me = { uid: snap.id, ...(snap.data()||{}) };
+
+      // local cache (menü vs için)
+      try {
+        saveCurrentUser({
+          uid: me.uid,
+          email: me.email,
+          username: me.username,
+          role: me.role || "user",
+          profile: me.profile || {},
+          friends: me.friends || [],
+          friendRequests: me.friendRequests || [],
+          badges: me.badges || []
+        });
+      } catch(e){}
+
+      render();
+    });
+  });
+
+})();
