@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profil – NexuForge</title>
+  <title>Profilim – NexuForge</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -41,73 +41,42 @@
       <h2>Profilim</h2>
       <p class="small-text" id="profileInfo"></p>
 
-      <div class="card profile-card">
-        <h3>Bilgiler</h3>
-        <input id="profAbout" placeholder="Hakkımda" />
-        <input id="profInstagram" placeholder="Instagram kullanıcı adı" />
-        <input id="profTiktok" placeholder="TikTok kullanıcı adı" />
-        <input id="profX" placeholder="Twitter / X kullanıcı adı" />
-        <input id="profDiscord" placeholder="Discord kullanıcı adı" />
-        <label style="font-size:13px;margin-top:8px;display:block;">
-          Profil Teması:
-          <select id="profTheme">
-            <option value="">Varsayılan</option>
-            <option value="neon-green">Neon Yeşil</option>
-            <option value="neon-blue">Neon Mavi</option>
-            <option value="crimson">Kırmızı</option>
-            <option value="violet">Mor</option>
-            <option value="gold">Altın</option>
-            <option value="cyan">Camgöbeği</option>
-            <option value="sunset">Sunset</option>
-            <option value="gold-white">Altın / Beyaz</option>
-            <option value="red-white">Kırmızı / Beyaz</option>
-            <option value="blue-pink">Mavi / Pembe</option>
-          </select>
-        </label>
-        <button onclick="saveProfile()">Kaydet</button>
+      <div class="card" style="padding:14px;">
+        <h3>Profil Bilgileri</h3>
+
+        <label class="small-text">Hakkımda</label>
+        <textarea id="profAbout" rows="3" style="width:100%;margin:6px 0 10px;"></textarea>
+
+        <label class="small-text">Instagram</label>
+        <input id="profInstagram" style="width:100%;margin:6px 0 10px;" />
+
+        <label class="small-text">TikTok</label>
+        <input id="profTiktok" style="width:100%;margin:6px 0 10px;" />
+
+        <label class="small-text">X (Twitter)</label>
+        <input id="profX" style="width:100%;margin:6px 0 10px;" />
+
+        <label class="small-text">Discord</label>
+        <input id="profDiscord" style="width:100%;margin:6px 0 10px;" />
+
+        <label class="small-text">Tema (opsiyonel)</label>
+        <input id="profTheme" style="width:100%;margin:6px 0 10px;" placeholder="örn: neon-blue" />
+
+        <button onclick="saveProfile()">Profili Kaydet</button>
       </div>
     </section>
   </main>
 
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script src="js/firebase-init.js"></script>
+  <script src="js/db-init.js"></script>
   <script src="js/utils.js"></script>
+  <script src="js/auth-firebase.js"></script>
   <script src="js/ui.js"></script>
-  <script>
-    const infoEl = document.getElementById('profileInfo');
-    const cur = getCurrentUser();
-    if (!cur) {
-      infoEl.textContent = 'Profil düzenlemek için giriş yapmanız gerekiyor.';
-    } else {
-      infoEl.textContent = `Giriş yapan: ${cur.username} (${cur.email})`;
-      const p = cur.profile || {};
-      document.getElementById('profAbout').value     = p.about || '';
-      document.getElementById('profInstagram').value = p.instagram || '';
-      document.getElementById('profTiktok').value    = p.tiktok || '';
-      document.getElementById('profX').value         = p.x || '';
-      document.getElementById('profDiscord').value   = p.discord || '';
-      document.getElementById('profTheme').value     = p.theme || '';
-    }
-
-    function saveProfile() {
-      const user = getCurrentUser();
-      if (!user) return alert('Giriş yapmalısınız.');
-
-      const users = getUsers();
-      const idx = users.findIndex(u => u.uid === user.uid);
-      if (idx === -1) return alert('Kullanıcı bulunamadı.');
-
-      const p = users[idx].profile || {};
-      p.about    = document.getElementById('profAbout').value.trim();
-      p.instagram= document.getElementById('profInstagram').value.trim();
-      p.tiktok   = document.getElementById('profTiktok').value.trim();
-      p.x        = document.getElementById('profX').value.trim();
-      p.discord  = document.getElementById('profDiscord').value.trim();
-      p.theme    = document.getElementById('profTheme').value;
-
-      users[idx].profile = p;
-      saveUsers(users);
-      saveCurrentUser(users[idx]);
-      alert('Profil kaydedildi.');
-    }
-  </script>
+  <script src="js/profile-firebase.js"></script>
 </body>
 </html>
