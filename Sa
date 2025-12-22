@@ -1,0 +1,149 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* =========================
+       Helpers
+    ========================= */
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userDoc(uid) {
+      return get(/databases/$(database)/documents/users/$(uid));
+    }
+
+    function myRole() {
+      return signedIn() && userDoc(request.auth.uid).exists()
+        ? (userDoc(request.auth.uid).data.role ?? "user")
+        : "guest";
+    }
+
+    function isAdminOrMod() {
+      return signedIn() && (myRole() == "admin" || myRole() == "mod");
+    }
+
+    function isAdminOnly() {
+      return signedIn() && (myRole() == "admin");
+    }
+
+    function isMe(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    /* =========================
+       USERS
+       - DM araması ve profil için okunabilir.
+       - Kullanıcı kendi dokümanını düzenleyebilir.
+       - role/badges admin/mod tarafından yönetilir.
+    ========================= */
+    match /users/{uid} {
+      // Site içinde kullanıcı arama/DM için gerekli:
+      allow read: if signedIn();
+
+      // Kayıt sonrası users/{uid} oluşturma:
+      allow create: if isMe(uid);
+
+      // Güncelleme:
+      // - Kullanıcı kendi profilini güncelleyebilir
+      // - FAKAT role/badges/friends/friendRequests admin/mod dışında değiştirilemesin
+      allow update: if isMe(uid) && canUserUpdateOwnSafeFields()
+                    || isAdminOrMod();
+
+      // Silme: kapalı (istersen admin'e açarız)
+      allow delete: if false;
+
+      function canUserUpdateOwnSafeFields() {
+        // Kullanıcı kendi dokümanında sadece "güvenli" alanları değiştirebilsin:
+        // username, usernameLower, email, profile gibi alanlara izin.
+        // role/badges/friends/friendRequests gibi alanlar normal kullanıcıya kapalı.
+        return !(request.resource.data.diff(resource.data).changedKeys()
+          .hasAny(["role", "badges", "friends", "friendRequests"]));
+      }
+    }
+
+    /* =========================
+       PRODUCTS
+       - Herkes okuyabilir
+       - Sadece admin/mod yazabilir
+    ========================= */
+    match /products/{id} {
+      allow read: if true;
+      allow create, update, delete: if isAdminOrMod();
+    }
+
+    /* =========================
+       SCRIMS (Events)
+       - Herkes okuyabilir
+       - Sadece admin/mod yazabilir
+    ========================= */
+    match /scrims/{id} {
+      allow read: if true;
+      allow create, update, delete: if isAdminOrMod();
+    }
+
+    /* =========================
+       NOTIFICATIONS
+       - "everyone" olanları herkes görsün
+       - kişiye özel olanları sadece o kişi görsün
+       - sadece admin bildirim oluşturabilsin
+    ========================= */
+    match /notifications/{id} {
+      allow read: if resource.data.to == "everyone"
+                  || (signedIn() && resource.data.to == request.auth.uid);
+
+      allow create: if isAdminOnly(); // İstersen admin/mod yaparız
+      allow update, delete: if isAdminOnly();
+    }
+
+    /* =========================
+       DMS
+       dms/{dmId} -> participants: [uidA, uidB]
+       dms/{dmId}/messages/{msgId}
+       - Sadece katılımcılar okuyup yazabilir
+       - Mesaj atan kişi fromUid == auth.uid olmalı
+    ========================= */
+    match /dms/{dmId} {
+      allow read: if signedIn() && isParticipant(resource.data.participants);
+
+      // dm doc ilk kez oluşurken resource yok, request üzerinden kontrol:
+      allow create: if signedIn()
+                    && request.resource.data.keys().hasAll(["participants"])
+                    && request.resource.data.participants.size() == 2
+                    && request.auth.uid in request.resource.data.participants;
+
+      allow update: if signedIn()
+                    && isParticipant(resource.data.participants)
+                    // participants değiştirmeyi kapat
+                    && request.resource.data.participants == resource.data.participants;
+
+      allow delete: if false;
+
+      match /messages/{msgId} {
+        allow read: if signedIn()
+                    && isParticipant(get(/databases/$(database)/documents/dms/$(dmId)).data.participants);
+
+        allow create: if signedIn()
+                      && isParticipant(get(/databases/$(database)/documents/dms/$(dmId)).data.participants)
+                      && request.resource.data.fromUid == request.auth.uid
+                      && request.resource.data.keys().hasAll(["fromUid","toUid","text","createdAt"]);
+
+        // Mesajı sonradan editleme/silme kapalı (istersen açarız)
+        allow update, delete: if false;
+      }
+
+      function isParticipant(participants) {
+        return participants is list
+          && participants.size() == 2
+          && request.auth.uid in participants;
+      }
+    }
+
+    /* =========================
+       Default deny
+    ========================= */
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
