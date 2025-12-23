@@ -406,3 +406,40 @@ button:hover, .btn:hover{
 
 /* Simple separators */
 hr{ border: none; border-top: 1px solid rgba(148,163,184,.18); margin: 14px 0; }
+/* =========================
+   Sidebar pozisyon fix (global)
+   Bazı sayfalarda sola kayma/sol üste yapışma engeli
+========================= */
+
+.sidebar{
+  left: auto !important;
+  right: -320px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+}
+
+.sidebar.open{
+  left: auto !important;
+  right: 0 !important;
+}
+
+/* Menü toggle butonu header içinde sabit dursun */
+.header .edge-toggle{
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  transform: none !important;
+
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 999px !important;
+
+  display: grid !important;
+  place-items: center !important;
+}
+
+/* Overlay her sayfada tam ekran kalsın */
+#overlay{
+  position: fixed !important;
+  inset: 0 !important;
+}
