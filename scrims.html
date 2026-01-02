@@ -7,13 +7,14 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
   <div id="overlay"></div>
 
   <header class="header">
     <div class="logo" onclick="window.location='index.html'">NEXUFORGE</div>
     <div class="header-right">
       <div class="notif" onclick="window.location='notifications.html'">🔔<span id="notifCount" class="notif-count">0</span></div>
-      <div id="menuToggle" class="edge-toggle">‹</div>
+      <button id="menuToggle" class="icon-btn" type="button">☰</button>
     </div>
   </header>
 
@@ -39,13 +40,11 @@
   <script src="js/utils.js"></script>
   <script src="js/ui.js"></script>
 
-  <!-- Firebase SDK (compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
   <script src="js/firebase-init.js"></script>
   <script src="js/db-init.js"></script>
-
   <script src="js/scrims-firebase.js"></script>
 </body>
 </html>
