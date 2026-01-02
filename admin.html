@@ -15,7 +15,7 @@
     <div class="header-right">
       <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
       <button class="icon-btn" onclick="location.href='dm.html'">👥</button>
-      <div id="menuToggle" class="edge-toggle">‹</div>
+      <button id="menuToggle" class="icon-btn" type="button">☰</button>
     </div>
   </header>
 
@@ -36,17 +36,15 @@
 
   <main class="admin-main main">
 
-    <!-- ADMIN BİLGİ -->
     <section class="admin-section">
       <h2>Admin Panel</h2>
       <p class="small-text" id="adminUserInfo"></p>
     </section>
 
-    <!-- ÜRÜN EKLE -->
     <section class="admin-section">
       <h2>Ürün Ekle</h2>
 
-      <form id="productForm" class="admin-form">
+      <form id="productForm" class="admin-form card">
         <div class="form-row">
           <label>Ürün Adı</label>
           <input id="prodName" placeholder="Örn: NexuForge Hoodie" required />
@@ -72,23 +70,20 @@
       </form>
     </section>
 
-    <!-- ÜRÜNLER -->
     <section class="admin-section">
       <h2>Ürünler</h2>
       <div id="adminProductsList" class="admin-products-list"></div>
     </section>
 
-    <!-- KULLANICILAR -->
     <section class="admin-section">
       <h2>Kullanıcılar</h2>
       <div id="adminUsersList" class="admin-users-list"></div>
     </section>
 
-    <!-- SCRIM / EVENT EKLE -->
     <section class="admin-section">
       <h2>Scrim / Event Ekle</h2>
 
-      <form id="scrimForm" class="admin-form">
+      <form id="scrimForm" class="admin-form card">
         <div class="form-row">
           <label>Etkinlik Adı</label>
           <input id="eventName" placeholder="Örn: Valorant Scrim" required />
@@ -108,16 +103,15 @@
       </p>
     </section>
 
-    <!-- BİLDİRİM GÖNDER -->
     <section class="admin-section">
       <h2>Bildirim Gönder</h2>
 
       <p class="small-text">
-        Hedef alanına <code>everyone</code> yazarsan herkese gider.  
+        Hedef alanına <code>everyone</code> yazarsan herkese gider.
         İstersen kullanıcı UID’si de yazabilirsin.
       </p>
 
-      <form id="notifForm" class="admin-form">
+      <form id="notifForm" class="admin-form card">
         <div class="form-row">
           <label>Hedef (everyone / uid)</label>
           <input id="notifTo" placeholder="everyone" required />
@@ -140,21 +134,17 @@
 
   </main>
 
-  <!-- GENEL -->
   <script src="js/utils.js"></script>
   <script src="js/ui.js"></script>
 
-  <!-- Firebase SDK (compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-  <!-- Firebase init -->
   <script src="js/firebase-init.js"></script>
   <script src="js/db-init.js"></script>
   <script src="js/auth-firebase.js"></script>
 
-  <!-- Admin logic -->
   <script src="js/admin-products.js"></script>
   <script src="js/admin-users.js"></script>
   <script src="js/admin-extra.js"></script>
