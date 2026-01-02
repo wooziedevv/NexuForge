@@ -1,145 +1,114 @@
-// js/ui.js (FINAL - sidebar kayma fix + nav visibility)
+// js/ui.js (FINAL - kesin sidebar fix)
 
 (function () {
   "use strict";
 
-  // Esnek seçiciler: id varsa id, yoksa class üzerinden yakalar
-  const $ = (sel) => document.querySelector(sel);
+  const $ = (s) => document.querySelector(s);
 
-  const overlay =
-    $("#overlay") || $(".overlay") || document.createElement("div");
+  // Esnek yakalama (bazı sayfalarda id farklı olabiliyor)
+  let sidebar = $("#sidebar") || document.querySelector("nav.sidebar") || $(".sidebar");
+  let overlay = $("#overlay") || $(".overlay");
+  const menuToggle = $("#menuToggle") || $(".edge-toggle") || document.querySelector("[data-menu-toggle]");
+  const adminLink = $("#adminLink") || (sidebar ? sidebar.querySelector(".admin-link") : null);
 
-  // sidebar: id yoksa .sidebar yakala
-  const sidebar =
-    $("#sidebar") || document.querySelector("nav.sidebar") || $(".sidebar");
-
-  // toggle: id yoksa .edge-toggle ya da menu ikonu
-  const menuToggle =
-    $("#menuToggle") ||
-    document.querySelector(".edge-toggle") ||
-    document.querySelector("[data-menu-toggle]");
-
-  // close: id yoksa sidebar içinden .close-btn ara
-  const closeBtn =
-    $("#closeSidebar") ||
-    (sidebar ? sidebar.querySelector(".close-btn") : null) ||
-    document.querySelector("[data-menu-close]");
-
-  const adminLink =
-    $("#adminLink") ||
-    (sidebar ? sidebar.querySelector(".admin-link") : null);
-
-  // Eğer overlay sayfada yoksa otomatik ekleyelim (bazı sayfalarda unutuluyor)
   function ensureOverlay() {
-    if (overlay.id !== "overlay") {
+    if (!overlay) {
+      overlay = document.createElement("div");
       overlay.id = "overlay";
+      document.body.appendChild(overlay);
     }
-    if (!document.getElementById("overlay")) {
+    if (!overlay.id) overlay.id = "overlay";
+  }
+
+  function moveToBody() {
+    // Sidebar body altında değilse body altına taşı (ANA FIX)
+    if (sidebar && sidebar.parentElement !== document.body) {
+      document.body.appendChild(sidebar);
+    }
+    // Overlay body altında değilse body altına taşı
+    if (overlay && overlay.parentElement !== document.body) {
       document.body.appendChild(overlay);
     }
   }
 
-  // Sidebar'ı her koşulda sağa sabitleyen "hard fix"
-  function forceSidebarRight(isOpen) {
-    if (!sidebar) return;
+  function forceLayers() {
+    // Header varsa z-index’i sabitle
+    const header = document.querySelector(".header");
+    if (header) header.style.zIndex = "800";
 
-    // Inline style basarak tüm çakışmaları ezer
-    sidebar.style.position = "fixed";
-    sidebar.style.top = "0";
-    sidebar.style.bottom = "0";
-    sidebar.style.left = "auto";
-    sidebar.style.transform = "none";
-    sidebar.style.margin = "0";
+    if (overlay) {
+      overlay.style.position = "fixed";
+      overlay.style.inset = "0";
+      overlay.style.zIndex = "900";
+    }
 
-    // genişlik sabitle (CSS ile uyumlu)
-    if (!sidebar.style.width) sidebar.style.width = "300px";
-
-    // açık/kapalı duruma göre right
-    sidebar.style.right = isOpen ? "0" : "-320px";
+    if (sidebar) {
+      sidebar.style.position = "fixed";
+      sidebar.style.top = "0";
+      sidebar.style.bottom = "0";
+      sidebar.style.left = "auto";
+      sidebar.style.right = sidebar.classList.contains("open") ? "0" : "-320px";
+      sidebar.style.transform = "none";
+      sidebar.style.margin = "0";
+      sidebar.style.width = "300px";
+      sidebar.style.zIndex = "1000";
+    }
   }
 
   function openSidebar() {
     if (!sidebar) return;
     ensureOverlay();
+    moveToBody();
     sidebar.classList.add("open");
     overlay.classList.add("show");
-
-    // açarken mutlaka sağa oturt
-    forceSidebarRight(true);
-
-    // body scroll kilidi (mobilde iyi durur)
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
+    forceLayers();
   }
 
   function closeSidebar() {
     if (!sidebar) return;
     sidebar.classList.remove("open");
-    overlay.classList.remove("show");
-
-    // kapatırken de sağa oturt
-    forceSidebarRight(false);
-
-    document.documentElement.style.overflow = "";
-    document.body.style.overflow = "";
+    if (overlay) overlay.classList.remove("show");
+    forceLayers();
   }
 
   function toggleSidebar() {
     if (!sidebar) return;
-    const isOpen = sidebar.classList.contains("open");
-    isOpen ? closeSidebar() : openSidebar();
+    sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
   }
 
-  // Admin link + guest/auth link grupları
   function refreshNavVisibility() {
     let user = null;
     try { user = getCurrentUser(); } catch (e) {}
 
-    // admin link
     if (adminLink) {
       const isOwner = user?.username?.toLowerCase() === "wooziedev11";
       const isAdminOrMod = user && (user.role === "admin" || user.role === "mod");
       adminLink.style.display = (isOwner || isAdminOrMod) ? "block" : "none";
     }
 
-    // class ile görünürlük
-    document.querySelectorAll(".nav-guest-only")
-      .forEach(el => (el.style.display = user ? "none" : "block"));
-
-    document.querySelectorAll(".nav-auth-only")
-      .forEach(el => (el.style.display = user ? "block" : "none"));
-  }
-
-  function bindEvents() {
-    if (menuToggle) menuToggle.addEventListener("click", toggleSidebar);
-    if (closeBtn) closeBtn.addEventListener("click", closeSidebar);
-
-    // overlay click
-    ensureOverlay();
-    overlay.addEventListener("click", closeSidebar);
-
-    // ESC ile kapatma
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeSidebar();
-    });
-
-    // Resize olunca pozisyonu tekrar zorla
-    window.addEventListener("resize", () => {
-      if (!sidebar) return;
-      forceSidebarRight(sidebar.classList.contains("open"));
-    });
-
-    // Storage değişince nav yenile (login/logout)
-    window.addEventListener("storage", (e) => {
-      if (e.key === "currentUser") refreshNavVisibility();
-    });
+    document.querySelectorAll(".nav-guest-only").forEach(el => el.style.display = user ? "none" : "block");
+    document.querySelectorAll(".nav-auth-only").forEach(el => el.style.display = user ? "block" : "none");
   }
 
   document.addEventListener("DOMContentLoaded", () => {
     ensureOverlay();
-    // Sayfa yüklenince sidebar kapalı konumda sağa sabitle
-    forceSidebarRight(false);
+    sidebar = $("#sidebar") || document.querySelector("nav.sidebar") || $(".sidebar"); // tekrar yakala
+    moveToBody();
+    forceLayers();
     refreshNavVisibility();
-    bindEvents();
+
+    // eventler
+    if (menuToggle) menuToggle.addEventListener("click", toggleSidebar);
+
+    // close butonu (sayfaya göre değişebilir)
+    const closeBtn = $("#closeSidebar") || (sidebar ? sidebar.querySelector(".close-btn") : null);
+    if (closeBtn) closeBtn.addEventListener("click", closeSidebar);
+
+    overlay.addEventListener("click", closeSidebar);
+
+    window.addEventListener("resize", forceLayers);
+    window.addEventListener("storage", (e) => {
+      if (e.key === "currentUser") refreshNavVisibility();
+    });
   });
 })();
