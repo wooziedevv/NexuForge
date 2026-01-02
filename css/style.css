@@ -457,3 +457,168 @@ hr{ border: none; border-top: 1px solid rgba(148,163,184,.18); margin: 14px 0; }
 #overlay {
   z-index: 900 !important;
 }
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexuForge</title>
+  <link rel="stylesheet" href="css/style.css?v=300" />
+</head>
+<body class="page-index">
+
+  <div id="overlay"></div>
+
+  <header class="header">
+    <div class="logo" onclick="location.href='index.html'">
+      NEXUFORGE <span>Gaming • E-Spor • Topluluk</span>
+    </div>
+
+    <div class="header-right">
+      <button class="icon-btn" onclick="location.href='notifications.html'">🔔</button>
+      <button id="menuToggle" class="icon-btn" type="button">☰</button>
+    </div>
+  </header>
+
+  <nav id="sidebar" class="sidebar">
+    <button id="closeSidebar" class="close-btn">✕</button>
+    <a href="index.html">🏠 Ana Sayfa</a>
+    <a href="products.html">🛒 Ürünler</a>
+    <a href="scrims.html">🎮 Scrim / Event</a>
+    <a href="dm.html">💬 Mesajlar</a>
+    <a href="profile.html">👤 Profilim</a>
+    <a href="settings.html" class="nav-auth-only">⚙️ Ayarlar</a>
+    <a href="auth.html" class="nav-guest-only">🔐 Giriş / Üyelik</a>
+    <a href="about.html">ℹ️ Hakkımızda</a>
+    <a href="contact.html">📞 İletişim</a>
+    <a id="adminLink" href="admin.html" class="admin-link" style="display:none;">⚡ Admin Panel</a>
+  </nav>
+
+  <main class="main">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="grid-noise"></div>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-badge">NEXUFORGE • Gaming • E-Spor • Topluluk</div>
+
+        <h1 class="hero-title">
+          Tek çatı altında <span class="grad">E-Spor</span>,
+          <span class="grad2">Yazılım</span> ve <span class="grad">Topluluk</span>
+        </h1>
+
+        <p class="hero-sub">
+          Takım duyuruları, scrim/event takvimi, ürünler, DM sohbet ve bildirimler…
+          NexuForge ile her şey tek yerde, hızlı ve modern.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="auth.html">🚀 Katıl / Giriş Yap</a>
+          <a class="btn" href="scrims.html">🎮 Scrim & Event</a>
+          <a class="btn" href="products.html">🛒 Ürünler</a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-num">DM</div>
+            <div class="stat-label">Hızlı sohbet</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">Scrim</div>
+            <div class="stat-label">Takvim & duyuru</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">Shop</div>
+            <div class="stat-label">Merch & ürünler</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-side">
+        <div class="card hero-card">
+          <div class="hero-card-title">🔥 Bugün Neler Var?</div>
+
+          <div class="hero-card-item">
+            <span>📌</span>
+            <div>
+              <strong>Topluluğa katıl</strong>
+              <div class="small-text">Giriş yap, profilini düzenle, arkadaş ekle.</div>
+            </div>
+          </div>
+
+          <div class="hero-card-item">
+            <span>🎯</span>
+            <div>
+              <strong>Scrim/Event takip et</strong>
+              <div class="small-text">Yeni etkinlikler anında scrims sayfasına düşer.</div>
+            </div>
+          </div>
+
+          <div class="hero-card-item">
+            <span>🔔</span>
+            <div>
+              <strong>Bildirimleri kaçırma</strong>
+              <div class="small-text">Admin duyuruları herkese veya kişiye özel gidebilir.</div>
+            </div>
+          </div>
+
+          <div class="hero-card-cta">
+            <a class="btn btn-primary" href="dm.html">💬 DM’ye Git</a>
+            <a class="btn" href="about.html">ℹ️ Detay</a>
+          </div>
+        </div>
+
+        <div class="card hero-mini">
+          <div class="pulse-dot"></div>
+          <div>
+            <strong>Canlı • Modern UI</strong>
+            <div class="small-text">Animasyonlu arkaplan + responsive tasarım</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="home-features">
+      <h2>Platform Ne Sunuyor?</h2>
+      <p class="small-text">Hızlı, sade ve topluluk odaklı bir deneyim.</p>
+
+      <div class="feature-grid">
+        <div class="card feature">
+          <div class="feature-ico">👥</div>
+          <div class="feature-title">Topluluk</div>
+          <div class="small-text">Arkadaş ekle, DM’den iletişim kur, ekip kur.</div>
+        </div>
+
+        <div class="card feature">
+          <div class="feature-ico">🎮</div>
+          <div class="feature-title">Scrim / Event</div>
+          <div class="small-text">Takvim, etkinlik ve duyurular tek yerde.</div>
+        </div>
+
+        <div class="card feature">
+          <div class="feature-ico">🛒</div>
+          <div class="feature-title">Ürünler</div>
+          <div class="small-text">Merch, ekipman ve takım ürünleri.</div>
+        </div>
+
+        <div class="card feature">
+          <div class="feature-ico">⚡</div>
+          <div class="feature-title">Admin Panel</div>
+          <div class="small-text">Ürün, kullanıcı, event ve bildirim yönetimi.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/utils.js?v=300"></script>
+  <script src="js/ui.js?v=300"></script>
+</body>
+</html>
