@@ -122,6 +122,39 @@
             <div class="small-text">Animasyonlu arkaplan + responsive tasarım</div>
           </div>
         </div>
+
+        <!-- ✅ ANLIK DURUM (LIVE STATS) - GÖRÜNÜM BOZMADAN -->
+        <div class="card" style="padding:14px;">
+          <div style="font-weight:900; margin-bottom:8px;">📊 Anlık Durum</div>
+
+          <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;">
+            <div style="padding:10px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.06); background:rgba(2,6,23,.35);">
+              <div style="font-size:12px; color:rgba(156,163,175,.95); margin-bottom:4px;">Kayıtlı</div>
+              <div style="font-weight:900; font-size:18px;" data-stat="total">—</div>
+            </div>
+
+            <div style="padding:10px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.06); background:rgba(2,6,23,.35);">
+              <div style="font-size:12px; color:rgba(156,163,175,.95); margin-bottom:4px;">Çevrim İçi</div>
+              <div style="font-weight:900; font-size:18px;" data-stat="online">—</div>
+            </div>
+
+            <div style="padding:10px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.06); background:rgba(2,6,23,.35);">
+              <div style="font-size:12px; color:rgba(156,163,175,.95); margin-bottom:4px;">Aktif</div>
+              <div style="font-weight:900; font-size:18px;" data-stat="active">—</div>
+            </div>
+
+            <div style="padding:10px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.06); background:rgba(2,6,23,.35);">
+              <div style="font-size:12px; color:rgba(156,163,175,.95); margin-bottom:4px;">Çevrim Dışı</div>
+              <div style="font-weight:900; font-size:18px;" data-stat="offline">—</div>
+            </div>
+          </div>
+
+          <div class="small-text" style="margin-top:10px;">
+            Sayılar anlık güncellenir.
+          </div>
+        </div>
+        <!-- ✅ /ANLIK DURUM -->
+
       </div>
     </section>
 
@@ -161,5 +194,8 @@
 
   <script src="js/utils.js?v=300"></script>
   <script src="js/ui.js?v=300"></script>
+
+  <!-- ✅ mevcut dosyan (zaten sende var) -->
+  <script src="js/live-stats.js?v=1"></script>
 </body>
 </html>
