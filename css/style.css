@@ -445,3 +445,15 @@ hr{ border: none; border-top: 1px solid rgba(148,163,184,.18); margin: 14px 0; }
 }
 #sidebar.sidebar { left:auto !important; right:-320px !important; top:0 !important; bottom:0 !important; transform:none !important; }
 #sidebar.sidebar.open { right:0 !important; }
+/* === Z-INDEX FIX (KESİN) === */
+.header {
+  z-index: 800 !important;
+}
+
+.sidebar {
+  z-index: 1000 !important;
+}
+
+#overlay {
+  z-index: 900 !important;
+}
