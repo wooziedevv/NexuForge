@@ -1,100 +1,86 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Giriş / Üyelik – NexuForge</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="page-auth">
 
-  <!-- KARARMA OVERLAY -->
   <div id="overlay"></div>
 
-  <!-- HEADER -->
   <header class="header">
-    <div class="logo" onclick="location.href='index.html'">
-      NEXUFORGE
-      <span>Giriş / Üyelik</span>
-    </div>
+    <div class="logo" onclick="location.href='index.html'">NEXUFORGE <span>Auth</span></div>
     <div class="header-right">
-      <button class="icon-btn" onclick="location.href='notifications.html'">
-        🔔
-      </button>
+      <button class="icon-btn" onclick="location.href='index.html'">🏠</button>
+      <button id="menuToggle" class="icon-btn" type="button">☰</button>
     </div>
   </header>
 
-  <!-- SAĞ KENAR OKU (MENÜ İÇİN) -->
-  <div id="menuToggle" class="edge-toggle">‹</div>
-
-  <!-- SAĞDAN AÇILAN MENÜ -->
   <nav id="sidebar" class="sidebar">
     <button id="closeSidebar" class="close-btn">✕</button>
-    <h3>Menü</h3>
-
     <a href="index.html">🏠 Ana Sayfa</a>
     <a href="products.html">🛒 Ürünler</a>
     <a href="scrims.html">🎮 Scrim / Event</a>
-    <a href="dm.html">💬 Sohbet / DM</a>
-    <a href="profile.html">👤 Profilim</a>
-    <a href="auth.html">🔐 Giriş / Üyelik</a>
     <a href="about.html">ℹ️ Hakkımızda</a>
     <a href="contact.html">📞 İletişim</a>
-    <a href="settings.html">⚙️ Ayarlar</a>
-    <a href="notifications.html">📨 Bildirimler</a>
-
-    <!-- Admin sadece belirli kullanıcıda görünecek (JS ile açılacak) -->
-    <a id="adminLink" href="admin.html" class="admin-link" style="display:none;">
-      ⚡ Admin Panel
-    </a>
   </nav>
 
-  <!-- İÇERİK -->
-  <main class="main auth-main">
-    <section class="auth-box">
-      <h2>Üyelik</h2>
+  <main class="auth-wrap">
+    <div class="auth-grid">
+      <div class="card auth-card">
+        <h2>Giriş Yap</h2>
+        <p class="small-text">Hesabınıza giriş yapın.</p>
 
-      <!-- KAYIT -->
-      <div class="auth-section">
-        <h3>Kayıt Ol</h3>
-        <input id="regUsername" placeholder="Kullanıcı adı" />
-        <input id="regEmail" type="email" placeholder="E-posta" />
-        <input id="regPassword" type="password" placeholder="Şifre" />
-        <button onclick="registerUser()">Kayıt Ol</button>
-        <p class="small-text" id="registerInfo"></p>
+        <div class="form-row">
+          <label>E-Posta</label>
+          <input id="loginEmail" type="email" placeholder="mail@..." />
+        </div>
+
+        <div class="form-row">
+          <label>Şifre</label>
+          <input id="loginPassword" type="password" placeholder="••••••••" />
+        </div>
+
+        <button class="btn btn-primary" onclick="loginUser()">Giriş Yap</button>
+        <p id="loginInfo" class="small-text"></p>
       </div>
 
-      <!-- GİRİŞ -->
-      <div class="auth-section">
-        <h3>Giriş Yap</h3>
-        <input id="loginEmail" type="email" placeholder="E-posta" />
-        <input id="loginPassword" type="password" placeholder="Şifre" />
-        <button onclick="loginUser()">Giriş Yap</button>
+      <div class="card auth-card">
+        <h2>Kayıt Ol</h2>
+        <p class="small-text">Yeni hesap oluşturun.</p>
 
-        <p class="small-text">
-          Şifreni mi unuttun?
-          <a href="#" onclick="sendPasswordResetLink(); return false;">
-            Şifre sıfırlama maili gönder
-          </a>
-        </p>
+        <div class="form-row">
+          <label>Kullanıcı Adı</label>
+          <input id="regUsername" placeholder="wooziedev11" />
+        </div>
 
-        <p class="small-text" id="loginInfo"></p>
+        <div class="form-row">
+          <label>E-Posta</label>
+          <input id="regEmail" type="email" placeholder="mail@..." />
+        </div>
+
+        <div class="form-row">
+          <label>Şifre</label>
+          <input id="regPassword" type="password" placeholder="••••••••" />
+        </div>
+
+        <button class="btn btn-primary" onclick="registerUser()">Kayıt Ol</button>
+        <p id="registerInfo" class="small-text"></p>
       </div>
-    </section>
+    </div>
   </main>
 
-  <!-- ORTAK UI -->
+  <script src="js/utils.js"></script>
   <script src="js/ui.js"></script>
 
-  <!-- Firebase SDK (compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-  <!-- Proje JS -->
   <script src="js/firebase-init.js"></script>
   <script src="js/db-init.js"></script>
-  <script src="js/utils.js"></script>
   <script src="js/auth-firebase.js"></script>
 </body>
 </html>
